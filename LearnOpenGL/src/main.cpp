@@ -3,6 +3,11 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+	glViewport(0, 0, width, height);
+}
+
 int main()
 {
 	glfwInit();
@@ -18,5 +23,13 @@ int main()
 		return -1;
 	}
 	glfwMakeContextCurrent(window);
+	glViewport(0, 0, 800, 600);
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	while (!glfwWindowShouldClose(window))
+	{
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	}
+	glfwTerminate();
 	return 0;
 }
