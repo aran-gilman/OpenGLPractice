@@ -22,14 +22,17 @@ int main()
 		glfwTerminate();
 		return -1;
 	}
+
 	glfwMakeContextCurrent(window);
 	glViewport(0, 0, 800, 600);
 	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+
 	glfwTerminate();
 	return 0;
 }
