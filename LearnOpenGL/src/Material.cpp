@@ -14,6 +14,9 @@ void Material::Use() const
 		texture->Use();
 	}
 	shader->Use();
+	shader->Set("frustumScale", 1.0f);
+	shader->Set("zNear", 1.0f);
+	shader->Set("zFar", 3.0f);
 }
 
 Shader* Material::GetShader()

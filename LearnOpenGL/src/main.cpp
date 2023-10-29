@@ -21,10 +21,23 @@ out vec3 vertexColor;
 out vec2 texCoord;
 
 uniform vec3 offset;
+uniform float zNear;
+uniform float zFar;
+uniform float frustumScale;
 
 void main()
 {
-    gl_Position = vec4(aPos, 1.0) + vec4(offset, 1.0);
+    vec4 cameraPos = vec4(aPos, 1.0) + vec4(offset, 0.0);
+    vec4 clipPos;
+
+    clipPos.xy = cameraPos.xy * frustumScale;
+
+    clipPos.z = cameraPos.z * (zNear + zFar) / (zNear - zFar);
+    clipPos.z += 2 * zNear * zFar / (zNear - zFar);
+
+    clipPos.w = -cameraPos.z;
+
+    gl_Position = cameraPos;
     vertexColor = aColor;
     texCoord = aTexCoord;
 })shader";
@@ -68,10 +81,10 @@ int main()
 		-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
 		-0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
 
-		 0.5f,  0.5f, 1.0f,  1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
-		 0.5f, -0.5f, 1.0f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
-		-0.5f, -0.5f, 1.0f,  0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
-		-0.5f,  0.5f, 1.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f
+		 0.5f,  0.5f, 0.5f,  1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
+		 0.5f, -0.5f, 0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
+		-0.5f, -0.5f, 0.5f,  0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
+		-0.5f,  0.5f, 0.5f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f
 	};
 	std::vector<unsigned int> indices = {
 		0, 1, 3,
@@ -85,7 +98,7 @@ int main()
 	};
 	Mesh mesh(vertices, indices);
 
-	Vector3 position(0, 0, 0);
+	Vector3 position(0.25, 0.75, 0);
 
 	window.Run([&] (Window* window)
 		{
@@ -96,7 +109,7 @@ int main()
 			material.Use();
 			material.GetShader()->Set("offset", position.x, position.y, position.z);
 			mesh.Use();
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, 0);
 
 			glBindVertexArray(0);
 			glBindTexture(GL_TEXTURE_2D, 0);
