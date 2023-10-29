@@ -52,6 +52,8 @@ int main()
 	std::shared_ptr<Shader> shader = std::make_shared<Shader>(vertexShaderSource, fragmentShaderSource);
 	std::shared_ptr<Texture> texture = std::make_shared<Texture>("resources/Ground_02.png");
 
+	glEnable(GL_DEPTH_TEST);
+
 	Material material(shader, texture);
 
 	// Rectangle + triangle #1
@@ -98,7 +100,7 @@ int main()
 	window.Run([&] (Window* window, double elapsedTime)
 		{
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			rotation += glm::radians(45.0f * (float)elapsedTime);
 			glm::mat4 transform = glm::mat4(1.0f);
