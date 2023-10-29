@@ -3,7 +3,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include "sail-c++/sail-c++.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 #include "Shader.h"
 
@@ -11,23 +12,30 @@ const char* vertexShaderSource = R"shader(
 #version 330 core
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aColor;
+layout (location = 2) in vec2 aTexCoord;
 
 out vec3 vertexColor;
+out vec2 texCoord;
 
 void main()
 {
     gl_Position = vec4(aPos, 1.0);
     vertexColor = aColor;
+    texCoord = aTexCoord;
 })shader";
 
 const char* fragmentShaderSource = R"shader(
 #version 330 core
-out vec4 FragColor;
 in vec3 vertexColor;
+in vec2 texCoord;
+
+out vec4 FragColor;
+
+uniform sampler2D inTexture;
 
 void main()
 {
-    FragColor = vec4(vertexColor, 1.0);
+    FragColor = texture(inTexture, texCoord) * vec4(vertexColor, 1.0);
 })shader";
 
 void onFramebufferSizeChange(GLFWwindow* window, int width, int height)
@@ -68,19 +76,39 @@ int main()
 		std::cout << "ERROR: Failed to initialize GLEW: " << glewGetErrorString(err) << std::endl;
 	}
 
-	sail::image image("resources/lazy_sunset.png");
 	Shader shader(vertexShaderSource, fragmentShaderSource);
+
+	unsigned int texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	{
+		int width, height, nrChannels;
+		unsigned char* data = stbi_load("resources/lazy_sunset.png", &width, &height, &nrChannels, 0);
+		if (data)
+		{
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
+		else
+		{
+			std::cerr << "Failed to load texture" << std::endl;
+		}
+
+		stbi_image_free(data);
+	}
 
 	// Rectangle + triangle #1
 	float vertices[] = {
-		// positions        // colors
-		 0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
-		 0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,
-		-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 0.0f,
-		-0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,
-		-0.8f, -0.9f, 0.0f,  1.0f, 0.0f, 0.0f,
-		-0.9f, -0.8f, 0.0f,  0.0f, 1.0f, 0.0f,
-		-0.7f, -0.8f, 0.0f,  0.0f, 0.0f, 1.0f
+		// positions        // colors          // texture coords
+		 0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
+		 0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
+		-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
+		-0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f
 	};
 	unsigned int indices[] = {
 		0, 1, 3,
@@ -101,30 +129,14 @@ int main()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
 
-	// Triangle #2
-	float vertices2[] = {
-		0.8f, 0.9f, 0.0f,
-		0.9f, 0.8f, 0.0f,
-		0.7f, 0.8f, 0.0f
-	};
-	
-	unsigned int VBO2;
-	glGenBuffers(1, &VBO2);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO2);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices2), vertices2, GL_STATIC_DRAW);
-
-	unsigned int VAO2;
-	glGenVertexArrays(1, &VAO2);
-	glBindVertexArray(VAO2);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -136,15 +148,14 @@ int main()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		glBindTexture(GL_TEXTURE_2D, texture);
+
 		shader.Use();
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		glDrawArrays(GL_TRIANGLES, 4, 3);
-
-		glBindVertexArray(VAO2);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		glBindVertexArray(0);
+		glBindTexture(GL_TEXTURE_2D, 0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -153,8 +164,6 @@ int main()
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &EBO);
-	glDeleteVertexArrays(1, &VAO2);
-	glDeleteBuffers(1, &VBO2);
 
 	glfwTerminate();
 	return 0;
