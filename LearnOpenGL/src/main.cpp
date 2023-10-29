@@ -6,6 +6,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Material.h"
+#include "Mesh.h"
 #include "Shader.h"
 #include "Texture.h"
 
@@ -94,31 +95,20 @@ int main()
 	Material material(shader, texture);
 
 	// Rectangle + triangle #1
-	float vertices[] = {
+	std::vector<float> vertices = {
 		// positions        // colors          // texture coords
 		 0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
 		 0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
 		-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
 		-0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f
 	};
-	unsigned int indices[] = {
+	std::vector<unsigned int> indices = {
 		0, 1, 3,
 		1, 2, 3
 	};
-
-	unsigned int VBO;
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	unsigned int VAO;
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
-
-	unsigned int EBO;
-	glGenBuffers(1, &EBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	
+	auto x = sizeof(vertices);
+	Mesh mesh(vertices, indices);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
@@ -144,7 +134,7 @@ int main()
 		position.y = sin(glfwGetTime());
 		material.Use();
 		material.GetShader()->Set("offset", position.x, position.y, position.z);
-		glBindVertexArray(VAO);
+		mesh.Use();
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		glBindVertexArray(0);
@@ -153,10 +143,6 @@ int main()
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
-
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &EBO);
 
 	glfwTerminate();
 	return 0;
