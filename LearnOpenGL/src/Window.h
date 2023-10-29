@@ -12,7 +12,7 @@ public:
 	Window(int width, int height, const std::string& title);
 	~Window();
 
-	void Run(std::function<void(Window*)> render);
+	void Run(std::function<void(Window*, double)> render);
 	void Close();
 
 private:

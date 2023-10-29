@@ -52,12 +52,16 @@ Window::~Window()
 	glfwTerminate();
 }
 
-void Window::Run(std::function<void(Window*)> render)
+void Window::Run(std::function<void(Window*, double)> render)
 {
+	double previousTime = glfwGetTime();
+	double currentTime = previousTime;
 	while (!glfwWindowShouldClose(window))
 	{
+		previousTime = currentTime;
+		currentTime = glfwGetTime();
 		processInput(window);
-		render(this);
+		render(this, currentTime - previousTime);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

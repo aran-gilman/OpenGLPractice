@@ -56,16 +56,16 @@ int main()
 
 	// Rectangle + triangle #1
 	std::vector<float> vertices = {
-		// positions        // colors          // texture coords
-		 0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
-		 0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
-		-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
-		-0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
+		// positions         // colors          // texture coords
+		 0.5f,  0.5f, -0.5f,  1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
 
-		 0.5f,  0.5f, 1.0f,  1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
-		 0.5f, -0.5f, 1.0f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
-		-0.5f, -0.5f, 1.0f,  0.0f, 0.0f, 0.0f,  1.0f, 1.0f,
-		-0.5f,  0.5f, 1.0f,  0.0f, 0.0f, 1.0f,  1.0f, 0.0f
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.0f,  1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f,  1.0f, 0.0f
 	};
 	std::vector<unsigned int> indices = {
 		// front
@@ -94,18 +94,27 @@ int main()
 	};
 	Mesh mesh(vertices, indices);
 
-	glm::mat4 transform = glm::mat4(1.0f);
-	transform = glm::rotate(transform, glm::radians(45.0f), glm::vec3(1.0f, 1.0f, 0.0f));
-	transform = glm::scale(transform, glm::vec3(0.5f, 0.5f, 0.5f));
-
-	window.Run([&] (Window* window)
+	float rotation = 0.0f;
+	window.Run([&] (Window* window, double elapsedTime)
 		{
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
+			rotation += glm::radians(45.0f * (float)elapsedTime);
+			glm::mat4 transform = glm::mat4(1.0f);
+			transform = glm::translate(transform, glm::vec3(0.0f, 0.0f, -1.0f));
+			transform = glm::rotate(transform, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
+
 			material.Use();
 			material.GetShader()->Set4("transform", glm::value_ptr(transform));
 			mesh.Use();
+			glDrawElements(GL_TRIANGLES, 30, GL_UNSIGNED_INT, 0);
+
+			glm::mat4 transform2 = glm::mat4(1.0f);
+			transform2 = glm::translate(transform2, glm::vec3(-0.75f, 0.75f, -1.0f));
+			transform2 = glm::rotate(transform2, rotation, glm::vec3(0.0f, 1.0f, 0.0f));
+			transform2 = glm::scale(transform2, glm::vec3(0.25f, 0.25f, 0.25f));
+			material.GetShader()->Set4("transform", glm::value_ptr(transform2));
 			glDrawElements(GL_TRIANGLES, 30, GL_UNSIGNED_INT, 0);
 
 			glBindVertexArray(0);
