@@ -103,7 +103,10 @@ int main()
 		 0.5f,  0.5f, 0.0f,
 		 0.5f, -0.5f, 0.0f,
 		-0.5f, -0.5f, 0.0f,
-		-0.5f,  0.5f, 0.0f
+		-0.5f,  0.5f, 0.0f,
+		-0.8f, -0.9f, 0.0f,
+		-0.9f, -0.8f, 0.0f,
+		-0.7f, -0.8f, 0.0f
 	};
 	unsigned int indices[] = {
 		0, 1, 3,
@@ -140,6 +143,7 @@ int main()
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawArrays(GL_TRIANGLES, 4, 3);
 		glBindVertexArray(0);
 
 		glfwSwapBuffers(window);
