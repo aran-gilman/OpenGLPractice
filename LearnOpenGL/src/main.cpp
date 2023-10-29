@@ -3,6 +3,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "sail-c++/sail-c++.h"
+
 #include "Shader.h"
 
 const char* vertexShaderSource = R"shader(
@@ -66,6 +68,7 @@ int main()
 		std::cout << "ERROR: Failed to initialize GLEW: " << glewGetErrorString(err) << std::endl;
 	}
 
+	sail::image image("resources/lazy_sunset.png");
 	Shader shader(vertexShaderSource, fragmentShaderSource);
 
 	// Rectangle + triangle #1
