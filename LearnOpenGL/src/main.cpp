@@ -6,22 +6,24 @@
 const char* vertexShaderSource = R"shader(
 #version 330 core
 layout (location = 0) in vec3 aPos;
-out vec4 vertexColor;
+layout (location = 1) in vec3 aColor;
+
+out vec3 vertexColor;
 
 void main()
 {
-    gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
-    vertexColor = vec4(0.5, 0.0, 0.0, 1.0);
+    gl_Position = vec4(aPos, 1.0);
+    vertexColor = aColor;
 })shader";
 
 const char* fragmentShaderSource = R"shader(
 #version 330 core
 out vec4 FragColor;
-in vec4 vertexColor;
+in vec3 vertexColor;
 
 void main()
 {
-    FragColor = vertexColor;
+    FragColor = vec4(vertexColor, 1.0);
 })shader";
 
 
@@ -144,13 +146,14 @@ int main()
 
 	// Rectangle + triangle #1
 	float vertices[] = {
-		 0.5f,  0.5f, 0.0f,
-		 0.5f, -0.5f, 0.0f,
-		-0.5f, -0.5f, 0.0f,
-		-0.5f,  0.5f, 0.0f,
-		-0.8f, -0.9f, 0.0f,
-		-0.9f, -0.8f, 0.0f,
-		-0.7f, -0.8f, 0.0f
+		// positions        // colors
+		 0.5f,  0.5f, 0.0f,  1.0f, 0.0f, 0.0f,
+		 0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,
+		-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 0.0f,
+		-0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,
+		-0.8f, -0.9f, 0.0f,  1.0f, 0.0f, 0.0f,
+		-0.9f, -0.8f, 0.0f,  0.0f, 1.0f, 0.0f,
+		-0.7f, -0.8f, 0.0f,  0.0f, 0.0f, 1.0f
 	};
 	unsigned int indices[] = {
 		0, 1, 3,
@@ -171,8 +174,11 @@ int main()
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
 
 	// Triangle #2
 	float vertices2[] = {
