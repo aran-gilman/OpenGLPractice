@@ -9,6 +9,7 @@
 #include "Mesh.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Window.h"
 
 const char* vertexShaderSource = R"shader(
 #version 330 core
@@ -51,44 +52,9 @@ struct Vector3
 	Vector3(float x, float y, float z) : x(x), y(y), z(z) {}
 };
 
-void onFramebufferSizeChange(GLFWwindow* window, int width, int height)
-{
-	glViewport(0, 0, width, height);
-}
-
-void processInput(GLFWwindow* window)
-{
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-	{
-		glfwSetWindowShouldClose(window, true);
-	}
-}
-
 int main()
 {
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	GLFWwindow* window = glfwCreateWindow(800, 600, "LearnOpenGL", NULL, NULL);
-	if (window == NULL)
-	{
-		std::cout << "ERROR: Failed to create GLFW window" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-
-	glfwMakeContextCurrent(window);
-	glViewport(0, 0, 800, 600);
-	glfwSetFramebufferSizeCallback(window, onFramebufferSizeChange);
-
-	GLenum err = glewInit();
-	if (err != GLEW_OK)
-	{
-		std::cout << "ERROR: Failed to initialize GLEW: " << glewGetErrorString(err) << std::endl;
-	}
-
+	Window window(800, 600, "OpenGL Tutorial");
 	std::shared_ptr<Shader> shader = std::make_shared<Shader>(vertexShaderSource, fragmentShaderSource);
 	std::shared_ptr<Texture> texture = std::make_shared<Texture>("resources/Ground_02.png");
 
@@ -110,26 +76,21 @@ int main()
 
 	Vector3 position(0, 0, 0);
 
-	while (!glfwWindowShouldClose(window))
-	{
-		processInput(window);
+	window.Run([&] (Window* window)
+		{
+			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT);
 
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
+			position.y = sin(glfwGetTime());
+			material.Use();
+			material.GetShader()->Set("offset", position.x, position.y, position.z);
+			mesh.Use();
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-		position.y = sin(glfwGetTime());
-		material.Use();
-		material.GetShader()->Set("offset", position.x, position.y, position.z);
-		mesh.Use();
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			glBindVertexArray(0);
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
+	);
 
-		glBindVertexArray(0);
-		glBindTexture(GL_TEXTURE_2D, 0);
-
-		glfwSwapBuffers(window);
-		glfwPollEvents();
-	}
-
-	glfwTerminate();
 	return 0;
 }
