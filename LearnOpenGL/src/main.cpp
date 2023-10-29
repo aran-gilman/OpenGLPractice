@@ -12,8 +12,7 @@ void main()
 {
     gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
     vertexColor = vec4(0.5, 0.0, 0.0, 1.0);
-}
-)shader";
+})shader";
 
 const char* fragmentShaderSource = R"shader(
 #version 330 core
@@ -23,17 +22,18 @@ in vec4 vertexColor;
 void main()
 {
     FragColor = vertexColor;
-}
-)shader";
+})shader";
 
 
 const char* yellowFragmentShaderSource = R"shader(
 #version 330 core
 out vec4 FragColor;
 
+uniform vec4 inColor;
+
 void main()
 {
-    FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);
+    FragColor = inColor;
 })shader";
 
 void onFramebufferSizeChange(GLFWwindow* window, int width, int height)
@@ -196,6 +196,8 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
+	int vertexColorLocation = glGetUniformLocation(shaderProgram2, "inColor");
+
 	while (!glfwWindowShouldClose(window))
 	{
 		processInput(window);
@@ -208,7 +210,10 @@ int main()
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glDrawArrays(GL_TRIANGLES, 4, 3);
 
+		float timeValue = glfwGetTime();
+		float greenValue = (sin(timeValue) / 2.0f) + 0.5f;
 		glUseProgram(shaderProgram2);
+		glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
 		glBindVertexArray(VAO2);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
