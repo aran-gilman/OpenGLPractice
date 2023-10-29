@@ -15,6 +15,8 @@ public:
 	void Set(const std::string& name, float value0, float value1, float value2) const;
 	void Set(const std::string& name, float value0, float value1, float value2, float value3) const;
 
+	void Set4(const std::string& name, float* value);
+
 private:
 	int id;
 };

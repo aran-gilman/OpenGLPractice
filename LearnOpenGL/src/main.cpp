@@ -4,6 +4,9 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "Material.h"
 #include "Mesh.h"
@@ -20,24 +23,11 @@ layout (location = 2) in vec2 aTexCoord;
 out vec3 vertexColor;
 out vec2 texCoord;
 
-uniform vec3 offset;
-uniform float zNear;
-uniform float zFar;
-uniform float frustumScale;
+uniform mat4 transform;
 
 void main()
 {
-    vec4 cameraPos = vec4(aPos, 1.0) + vec4(offset, 0.0);
-    vec4 clipPos;
-
-    clipPos.xy = cameraPos.xy * frustumScale;
-
-    clipPos.z = cameraPos.z * (zNear + zFar) / (zNear - zFar);
-    clipPos.z += 2 * zNear * zFar / (zNear - zFar);
-
-    clipPos.w = -cameraPos.z;
-
-    gl_Position = cameraPos;
+    gl_Position = transform * vec4(aPos, 1.0f);
     vertexColor = aColor;
     texCoord = aTexCoord;
 })shader";
@@ -55,15 +45,6 @@ void main()
 {
     FragColor = texture(inTexture, texCoord) * vec4(vertexColor, 1.0);
 })shader";
-
-struct Vector3
-{
-	float x;
-	float y;
-	float z;
-
-	Vector3(float x, float y, float z) : x(x), y(y), z(z) {}
-};
 
 int main()
 {
@@ -98,16 +79,16 @@ int main()
 	};
 	Mesh mesh(vertices, indices);
 
-	Vector3 position(0.25, 0.75, 0);
+	glm::mat4 transform = glm::mat4(1.0f);
+	transform = glm::translate(transform, glm::vec3(1.0f, 1.0f, 0.0f));
 
 	window.Run([&] (Window* window)
 		{
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			position.y = sin(glfwGetTime());
 			material.Use();
-			material.GetShader()->Set("offset", position.x, position.y, position.z);
+			material.GetShader()->Set4("transform", glm::value_ptr(transform));
 			mesh.Use();
 			glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, 0);
 
