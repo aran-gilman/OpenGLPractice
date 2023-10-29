@@ -62,20 +62,35 @@ int main()
 		-0.5f, -0.5f, 0.0f,  0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
 		-0.5f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
 
-		 0.5f,  0.5f, 1.0f,  1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
-		 0.5f, -0.5f, 1.0f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
-		-0.5f, -0.5f, 1.0f,  0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
-		-0.5f,  0.5f, 1.0f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f
+		 0.5f,  0.5f, 1.0f,  1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
+		 0.5f, -0.5f, 1.0f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
+		-0.5f, -0.5f, 1.0f,  0.0f, 0.0f, 0.0f,  1.0f, 1.0f,
+		-0.5f,  0.5f, 1.0f,  0.0f, 0.0f, 1.0f,  1.0f, 0.0f
 	};
 	std::vector<unsigned int> indices = {
+		// front
 		0, 1, 3,
 		1, 2, 3,
+
+		// right
 		4, 5, 0,
 		5, 1, 0,
+
+		// left
 		3, 2, 7,
 		2, 6, 7,
+
+		// back
 		7, 6, 4,
 		6, 5, 4,
+
+		// top
+		4, 0, 7,
+		0, 3, 7,
+
+		// bottom
+		1, 5, 2,
+		5, 6, 2
 	};
 	Mesh mesh(vertices, indices);
 
@@ -91,7 +106,7 @@ int main()
 			material.Use();
 			material.GetShader()->Set4("transform", glm::value_ptr(transform));
 			mesh.Use();
-			glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, 30, GL_UNSIGNED_INT, 0);
 
 			glBindVertexArray(0);
 			glBindTexture(GL_TEXTURE_2D, 0);
