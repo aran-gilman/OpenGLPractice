@@ -106,8 +106,6 @@ int main()
 		0, 1, 3,
 		1, 2, 3
 	};
-	
-	auto x = sizeof(vertices);
 	Mesh mesh(vertices, indices);
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
