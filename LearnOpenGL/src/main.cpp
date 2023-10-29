@@ -66,20 +66,6 @@ int main()
 		std::cout << "ERROR: Failed to initialize GLEW: " << glewGetErrorString(err) << std::endl;
 	}
 
-	unsigned int vertexShader;
-	vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-	glCompileShader(vertexShader);
-
-	int success;
-	char infoLog[512];
-	glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-	if (!success)
-	{
-		glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-		std::cout << "ERROR: Vertex shader compilation failed: " << infoLog << std::endl;
-	}
-
 	Shader shader(vertexShaderSource, fragmentShaderSource);
 
 	// Rectangle + triangle #1
