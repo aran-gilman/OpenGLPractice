@@ -20,6 +20,16 @@ void main()
     FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);
 })shader";
 
+
+const char* yellowFragmentShaderSource = R"shader(
+#version 330 core
+out vec4 FragColor;
+
+void main()
+{
+    FragColor = vec4(1.0f, 1.0f, 0.0f, 1.0f);
+})shader";
+
 void onFramebufferSizeChange(GLFWwindow* window, int width, int height)
 {
 	glViewport(0, 0, width, height);
@@ -84,6 +94,18 @@ int main()
 		std::cout << "ERROR: Fragment shader compilation failed: " << infoLog << std::endl;
 	}
 
+	unsigned int yellowFragmentShader;
+	yellowFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(yellowFragmentShader, 1, &yellowFragmentShaderSource, NULL);
+	glCompileShader(yellowFragmentShader);
+
+	glGetShaderiv(yellowFragmentShader, GL_COMPILE_STATUS, &success);
+	if (!success)
+	{
+		glGetShaderInfoLog(yellowFragmentShader, 512, NULL, infoLog);
+		std::cout << "ERROR: Fragment shader compilation failed: " << infoLog << std::endl;
+	}
+
 	unsigned int shaderProgram;
 	shaderProgram = glCreateProgram();
 	glAttachShader(shaderProgram, vertexShader);
@@ -96,8 +118,23 @@ int main()
 		glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
 		std::cout << "ERROR: Shader program compilation failed: " << infoLog << std::endl;
 	}
+
+	unsigned int shaderProgram2;
+	shaderProgram2 = glCreateProgram();
+	glAttachShader(shaderProgram2, vertexShader);
+	glAttachShader(shaderProgram2, yellowFragmentShader);
+	glLinkProgram(shaderProgram2);
+
+	glGetProgramiv(shaderProgram2, GL_LINK_STATUS, &success);
+	if (!success)
+	{
+		glGetProgramInfoLog(shaderProgram2, 512, NULL, infoLog);
+		std::cout << "ERROR: Shader program compilation failed: " << infoLog << std::endl;
+	}
+
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+	glDeleteShader(yellowFragmentShader);
 
 	// Rectangle + triangle #1
 	float vertices[] = {
@@ -161,11 +198,11 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glUseProgram(shaderProgram);
-
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glDrawArrays(GL_TRIANGLES, 4, 3);
 
+		glUseProgram(shaderProgram2);
 		glBindVertexArray(VAO2);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 
@@ -177,7 +214,11 @@ int main()
 
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
+	glDeleteVertexArrays(1, &VAO2);
+	glDeleteBuffers(1, &VBO2);
 	glDeleteProgram(shaderProgram);
+	glDeleteProgram(shaderProgram2);
 
 	glfwTerminate();
 	return 0;
