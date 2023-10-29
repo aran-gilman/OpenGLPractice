@@ -100,7 +100,7 @@ int main()
 
 	{
 		int width, height, nrChannels;
-		unsigned char* data = stbi_load("resources/lazy_sunset.png", &width, &height, &nrChannels, 0);
+		unsigned char* data = stbi_load("resources/Ground_02.png", &width, &height, &nrChannels, 0);
 		if (data)
 		{
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
