@@ -4,10 +4,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
-
 #include "Shader.h"
+#include "Texture.h"
 
 const char* vertexShaderSource = R"shader(
 #version 330 core
@@ -89,30 +87,7 @@ int main()
 	}
 
 	Shader shader(vertexShaderSource, fragmentShaderSource);
-
-	unsigned int texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	{
-		int width, height, nrChannels;
-		unsigned char* data = stbi_load("resources/Ground_02.png", &width, &height, &nrChannels, 0);
-		if (data)
-		{
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-			glGenerateMipmap(GL_TEXTURE_2D);
-		}
-		else
-		{
-			std::cerr << "Failed to load texture" << std::endl;
-		}
-
-		stbi_image_free(data);
-	}
+	Texture texture("resources/Ground_02.png");
 
 	// Rectangle + triangle #1
 	float vertices[] = {
@@ -162,7 +137,7 @@ int main()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glBindTexture(GL_TEXTURE_2D, texture);
+		texture.Use();
 		position.y = sin(glfwGetTime());
 
 		shader.Use();
