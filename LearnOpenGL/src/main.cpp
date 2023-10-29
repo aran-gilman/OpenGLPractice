@@ -108,14 +108,14 @@ int main()
 			material.Use();
 			material.GetShader()->Set4("transform", glm::value_ptr(transform));
 			mesh.Use();
-			glDrawElements(GL_TRIANGLES, 30, GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 
 			glm::mat4 transform2 = glm::mat4(1.0f);
 			transform2 = glm::translate(transform2, glm::vec3(-0.75f, 0.75f, -1.0f));
 			transform2 = glm::rotate(transform2, rotation, glm::vec3(0.0f, 1.0f, 0.0f));
 			transform2 = glm::scale(transform2, glm::vec3(0.25f, 0.25f, 0.25f));
 			material.GetShader()->Set4("transform", glm::value_ptr(transform2));
-			glDrawElements(GL_TRIANGLES, 30, GL_UNSIGNED_INT, 0);
+			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 
 			glBindVertexArray(0);
 			glBindTexture(GL_TEXTURE_2D, 0);
