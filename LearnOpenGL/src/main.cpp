@@ -1,3 +1,4 @@
+#include <cmath>
 #include <iostream>
 
 #include <GL/glew.h>
@@ -17,9 +18,11 @@ layout (location = 2) in vec2 aTexCoord;
 out vec3 vertexColor;
 out vec2 texCoord;
 
+uniform vec3 offset;
+
 void main()
 {
-    gl_Position = vec4(aPos, 1.0);
+    gl_Position = vec4(aPos, 1.0) + vec4(offset, 1.0);
     vertexColor = aColor;
     texCoord = aTexCoord;
 })shader";
@@ -37,6 +40,15 @@ void main()
 {
     FragColor = texture(inTexture, texCoord) * vec4(vertexColor, 1.0);
 })shader";
+
+struct Vector3
+{
+	float x;
+	float y;
+	float z;
+
+	Vector3(float x, float y, float z) : x(x), y(y), z(z) {}
+};
 
 void onFramebufferSizeChange(GLFWwindow* window, int width, int height)
 {
@@ -141,6 +153,8 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
+	Vector3 position(0, 0, 0);
+
 	while (!glfwWindowShouldClose(window))
 	{
 		processInput(window);
@@ -149,8 +163,10 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glBindTexture(GL_TEXTURE_2D, texture);
+		position.y = sin(glfwGetTime());
 
 		shader.Use();
+		shader.Set("offset", position.x, position.y, position.z);
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
