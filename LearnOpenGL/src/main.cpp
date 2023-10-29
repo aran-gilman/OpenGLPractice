@@ -1,9 +1,11 @@
 #include <cmath>
 #include <iostream>
+#include <memory>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "Material.h"
 #include "Shader.h"
 #include "Texture.h"
 
@@ -86,8 +88,10 @@ int main()
 		std::cout << "ERROR: Failed to initialize GLEW: " << glewGetErrorString(err) << std::endl;
 	}
 
-	Shader shader(vertexShaderSource, fragmentShaderSource);
-	Texture texture("resources/Ground_02.png");
+	std::shared_ptr<Shader> shader = std::make_shared<Shader>(vertexShaderSource, fragmentShaderSource);
+	std::shared_ptr<Texture> texture = std::make_shared<Texture>("resources/Ground_02.png");
+
+	Material material(shader, texture);
 
 	// Rectangle + triangle #1
 	float vertices[] = {
@@ -137,11 +141,9 @@ int main()
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		texture.Use();
 		position.y = sin(glfwGetTime());
-
-		shader.Use();
-		shader.Set("offset", position.x, position.y, position.z);
+		material.Use();
+		material.GetShader()->Set("offset", position.x, position.y, position.z);
 		glBindVertexArray(VAO);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 

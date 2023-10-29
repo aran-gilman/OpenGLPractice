@@ -140,11 +140,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Material.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\Shader.h" />
   </ItemGroup>
