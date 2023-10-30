@@ -28,13 +28,11 @@ uniform mat4 transform;
 void main()
 {
     gl_Position = transform * vec4(aPos, 1.0f);
-    vertexColor = aColor;
     texCoord = aTexCoord;
 })shader";
 
 const char* fragmentShaderSource = R"shader(
 #version 330 core
-in vec3 vertexColor;
 in vec2 texCoord;
 
 out vec4 FragColor;
@@ -43,7 +41,7 @@ uniform sampler2D inTexture;
 
 void main()
 {
-    FragColor = texture(inTexture, texCoord) * vec4(vertexColor, 1.0);
+    FragColor = texture(inTexture, texCoord);
 })shader";
 
 int main()
@@ -56,6 +54,7 @@ int main()
 
 	Material material(shader, texture);
 
+	/*
 	// Rectangle + triangle #1
 	std::vector<float> vertices = {
 		// positions         // colors          // texture coords
@@ -95,14 +94,87 @@ int main()
 		5, 6, 2
 	};
 	Mesh mesh(vertices, indices);
+	*/
+	
+	float vertices[] = {
+	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+	};
+
+	unsigned int vboID, vaoID;
+	glGenBuffers(1, &vboID);
+	glBindBuffer(GL_ARRAY_BUFFER, vboID);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glGenVertexArrays(1, &vaoID);
+	glBindVertexArray(vaoID);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+
+	glEnableVertexAttribArray(0);
+	glEnableVertexAttribArray(2);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 
 	float rotation = 0.0f;
+	glm::mat4 transform = glm::mat4(1.0f);
 	window.Run([&] (Window* window, double elapsedTime)
 		{
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			rotation += glm::radians(45.0f * (float)elapsedTime);
+			transform = glm::mat4(1.0f);
+			transform = glm::rotate(transform, rotation, glm::vec3(0.0f, 1.0f, 0.0f));
+
+			glBindVertexArray(vaoID);
+			material.Use();
+			material.GetShader()->Set4("transform", glm::value_ptr(transform));
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+
+			/*
+
 			glm::mat4 transform = glm::mat4(1.0f);
 			transform = glm::translate(transform, glm::vec3(0.0f, 0.0f, -1.0f));
 			transform = glm::rotate(transform, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
@@ -118,6 +190,7 @@ int main()
 			transform2 = glm::scale(transform2, glm::vec3(0.25f, 0.25f, 0.25f));
 			material.GetShader()->Set4("transform", glm::value_ptr(transform2));
 			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
+			*/
 
 			glBindVertexArray(0);
 			glBindTexture(GL_TEXTURE_2D, 0);
