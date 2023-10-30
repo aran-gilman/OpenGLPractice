@@ -55,109 +55,7 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 
 	Material material(shader, texture);
-
-	/*
-	// Rectangle + triangle #1
-	std::vector<float> vertices = {
-		// positions         // colors          // texture coords
-		 0.5f,  0.5f, -0.5f,  1.0f, 0.0f, 0.0f,  1.0f, 0.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, 0.0f,  1.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f, 0.0f,  0.0f, 1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 0.0f, 1.0f,  0.0f, 0.0f,
-
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f,  0.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, 1.0f, 0.0f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 0.0f,  1.0f, 1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f,  1.0f, 0.0f
-	};
-	std::vector<unsigned int> indices = {
-		// front
-		0, 1, 3,
-		1, 2, 3,
-
-		// right
-		4, 5, 0,
-		5, 1, 0,
-
-		// left
-		3, 2, 7,
-		2, 6, 7,
-
-		// back
-		7, 6, 4,
-		6, 5, 4,
-
-		// top
-		4, 0, 7,
-		0, 3, 7,
-
-		// bottom
-		1, 5, 2,
-		5, 6, 2
-	};
-	Mesh mesh(vertices, indices);
-	*/
-	
-	float vertices[] = {
-	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-	};
-
-	unsigned int vboID, vaoID;
-	glGenBuffers(1, &vboID);
-	glBindBuffer(GL_ARRAY_BUFFER, vboID);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glGenVertexArrays(1, &vaoID);
-	glBindVertexArray(vaoID);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-
-	glEnableVertexAttribArray(0);
-	glEnableVertexAttribArray(2);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+	Mesh mesh = Mesh::MakeCube();
 
 	float rotation = 0.0f;
 	glm::mat4 transform = glm::mat4(1.0f);
@@ -176,31 +74,12 @@ int main()
 			transform = glm::mat4(1.0f);
 			transform = glm::rotate(transform, rotation, glm::vec3(0.0f, 1.0f, 0.0f));
 
-			glBindVertexArray(vaoID);
 			material.Use();
 			material.GetShader()->Set4("transform", glm::value_ptr(transform));
 			material.GetShader()->Set4("view", glm::value_ptr(view));
 			material.GetShader()->Set4("projection", glm::value_ptr(projection));
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-
-			/*
-
-			glm::mat4 transform = glm::mat4(1.0f);
-			transform = glm::translate(transform, glm::vec3(0.0f, 0.0f, -1.0f));
-			transform = glm::rotate(transform, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
-
-			material.Use();
-			material.GetShader()->Set4("transform", glm::value_ptr(transform));
 			mesh.Use();
-			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-
-			glm::mat4 transform2 = glm::mat4(1.0f);
-			transform2 = glm::translate(transform2, glm::vec3(-0.75f, 0.75f, -1.0f));
-			transform2 = glm::rotate(transform2, rotation, glm::vec3(0.0f, 1.0f, 0.0f));
-			transform2 = glm::scale(transform2, glm::vec3(0.25f, 0.25f, 0.25f));
-			material.GetShader()->Set4("transform", glm::value_ptr(transform2));
-			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
-			*/
+			glDrawArrays(GL_TRIANGLES, 0, 36);
 
 			glBindVertexArray(0);
 			glBindTexture(GL_TEXTURE_2D, 0);
