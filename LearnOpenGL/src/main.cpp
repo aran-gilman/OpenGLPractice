@@ -78,10 +78,7 @@ int main()
 			material.GetShader()->Set4("transform", glm::value_ptr(transform));
 			material.GetShader()->Set4("view", glm::value_ptr(view));
 			material.GetShader()->Set4("projection", glm::value_ptr(projection));
-			mesh.Use();
-			glDrawArrays(GL_TRIANGLES, 0, 36);
-
-			glBindVertexArray(0);
+			mesh.Draw();
 			glBindTexture(GL_TEXTURE_2D, 0);
 		}
 	);

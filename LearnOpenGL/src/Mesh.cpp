@@ -80,10 +80,12 @@ Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>&
 		glGenBuffers(1, &eboID);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, eboID);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
+		drawCount = indices.size();
 	}
 	else
 	{
 		eboID = 0;
+		drawCount = vertices.size();
 	}
 
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
@@ -109,7 +111,16 @@ Mesh::~Mesh()
 	}
 }
 
-void Mesh::Use() const
+void Mesh::Draw() const
 {
 	glBindVertexArray(vaoID);
+	if (eboID > 0)
+	{
+		glDrawElements(GL_TRIANGLES, drawCount, GL_UNSIGNED_INT, 0);
+	}
+	else
+	{
+		glDrawArrays(GL_TRIANGLES, 0, drawCount);
+	}
+	glBindVertexArray(0);
 }

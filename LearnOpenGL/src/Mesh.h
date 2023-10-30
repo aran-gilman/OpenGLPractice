@@ -21,12 +21,14 @@ public:
 	Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);
 	~Mesh();
 
-	void Use() const;
+	void Draw() const;
 
 private:
 	unsigned int vboID;
 	unsigned int vaoID;
 	unsigned int eboID;
+
+	int drawCount;
 };
 
 #endif
