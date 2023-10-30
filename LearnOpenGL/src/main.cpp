@@ -46,6 +46,11 @@ void main()
     FragColor = texture(inTexture, texCoord);
 })shader";
 
+void onFramebufferSizeChange(int width, int height)
+{
+	glViewport(0, 0, width, height);
+}
+
 int main()
 {
 	Window window(800, 600, "OpenGL Tutorial");
@@ -65,7 +70,8 @@ int main()
 
 	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
 
-	window.Run([&] (Window* window, double elapsedTime)
+	WindowCallbacks callbacks;
+	callbacks.OnRender = [&](Window* window, double elapsedTime) 
 		{
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -80,8 +86,9 @@ int main()
 			material.GetShader()->Set4("projection", glm::value_ptr(projection));
 			mesh.Draw();
 			glBindTexture(GL_TEXTURE_2D, 0);
-		}
-	);
+		};
+	callbacks.OnResize = onFramebufferSizeChange;
+	window.Run(callbacks);
 
 	return 0;
 }

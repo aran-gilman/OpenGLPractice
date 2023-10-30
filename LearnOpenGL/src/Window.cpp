@@ -7,10 +7,9 @@
 
 namespace
 {
-	void onFramebufferSizeChange(GLFWwindow* window, int width, int height)
-	{
-		glViewport(0, 0, width, height);
-	}
+	// Because GLFW's framebuffer resizing uses a function pointer, we can't pass in a non-static member function or a capturing lambda.
+	// So, if we want to wrap the callback and hide the use of GLFW from Window users, we have to use some sort of static state.
+	static bool windowResized = false;
 
 	// TODO: Figure out a good way to abstract this
 	void processInput(GLFWwindow* window)
@@ -38,7 +37,7 @@ Window::Window(int width, int height, const std::string& title)
 
 	glfwMakeContextCurrent(window);
 	glViewport(0, 0, width, height);
-	glfwSetFramebufferSizeCallback(window, onFramebufferSizeChange);
+	glfwSetFramebufferSizeCallback(window, [](GLFWwindow*, int, int) { windowResized = true; });
 
 	GLenum err = glewInit();
 	if (err != GLEW_OK)
@@ -52,16 +51,26 @@ Window::~Window()
 	glfwTerminate();
 }
 
-void Window::Run(std::function<void(Window*, double)> render)
+void Window::Run(WindowCallbacks callbacks)
 {
+	std::function<void(Window*, double)> onRender = callbacks.OnRender.value_or([](Window*, double) {});
+	std::function<void(int, int)> onResize = callbacks.OnResize.value_or([](int, int) {});
+
 	double previousTime = glfwGetTime();
 	double currentTime = previousTime;
 	while (!glfwWindowShouldClose(window))
 	{
 		previousTime = currentTime;
 		currentTime = glfwGetTime();
+		if (windowResized)
+		{
+			int width, height;
+			glfwGetFramebufferSize(window, &width, &height);
+			onResize(width, height);
+			windowResized = false;
+		}
 		processInput(window);
-		render(this, currentTime - previousTime);
+		onRender(this, currentTime - previousTime);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
