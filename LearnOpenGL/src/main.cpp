@@ -24,10 +24,12 @@ out vec3 vertexColor;
 out vec2 texCoord;
 
 uniform mat4 transform;
+uniform mat4 view;
+uniform mat4 projection;
 
 void main()
 {
-    gl_Position = transform * vec4(aPos, 1.0f);
+    gl_Position = projection * view * transform * vec4(aPos, 1.0f);
     texCoord = aTexCoord;
 })shader";
 
@@ -159,6 +161,12 @@ int main()
 
 	float rotation = 0.0f;
 	glm::mat4 transform = glm::mat4(1.0f);
+
+	glm::mat4 view = glm::mat4(1.0f);
+	view = glm::translate(view, glm::vec3(0.0f, -1.0f, -10.0f));
+
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f);
+
 	window.Run([&] (Window* window, double elapsedTime)
 		{
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -171,6 +179,8 @@ int main()
 			glBindVertexArray(vaoID);
 			material.Use();
 			material.GetShader()->Set4("transform", glm::value_ptr(transform));
+			material.GetShader()->Set4("view", glm::value_ptr(view));
+			material.GetShader()->Set4("projection", glm::value_ptr(projection));
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 
 			/*
