@@ -1,6 +1,7 @@
 #include "Window.h"
 
 #include <iostream>
+#include <stdexcept>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -27,25 +28,22 @@ Window::Window(int width, int height, const std::string& title)
 	window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 	if (window == NULL)
 	{
-		std::cout << "ERROR: Failed to create GLFW window" << std::endl;
 		glfwTerminate();
+		throw std::runtime_error("Failed to create GLFW window");
 	}
 
 	glfwSetWindowUserPointer(window, this);
 	glfwMakeContextCurrent(window);
 	glViewport(0, 0, width, height);
-	glfwSetFramebufferSizeCallback(window,
-		[](GLFWwindow* window, int width, int height)
-		{
-			Window* user = static_cast<Window*>(glfwGetWindowUserPointer(window));
-			user->OnResize(width, height);
-		});
 
 	GLenum err = glewInit();
 	if (err != GLEW_OK)
 	{
-		std::cout << "ERROR: Failed to initialize GLEW: " << glewGetErrorString(err) << std::endl;
+		glfwTerminate();
+		throw std::runtime_error("Failed to initialize GLEW");
 	}
+
+	glEnable(GL_DEPTH_TEST);
 }
 
 Window::~Window()
@@ -53,9 +51,21 @@ Window::~Window()
 	glfwTerminate();
 }
 
-void Window::Run(WindowCallbacks callbacks)
+void Window::Run(IWindowListener* listener)
 {
-	this->callbacks = callbacks;
+	if (listener == nullptr)
+	{
+		throw std::invalid_argument("listener must be non-null");
+	}
+
+	this->listener = listener;
+	glfwSetFramebufferSizeCallback(window,
+		[](GLFWwindow* window, int width, int height)
+		{
+			Window* user = static_cast<Window*>(glfwGetWindowUserPointer(window));
+			user->listener->OnResize(width, height);
+		});
+
 	double previousTime = glfwGetTime();
 	double currentTime = previousTime;
 	while (!glfwWindowShouldClose(window))
@@ -63,7 +73,7 @@ void Window::Run(WindowCallbacks callbacks)
 		previousTime = currentTime;
 		currentTime = glfwGetTime();
 		processInput(window);
-		callbacks.OnRender(this, currentTime - previousTime);
+		this->listener->OnUpdate(this, currentTime - previousTime);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
@@ -72,15 +82,4 @@ void Window::Run(WindowCallbacks callbacks)
 void Window::Close()
 {
 	glfwSetWindowShouldClose(window, true);
-}
-
-void Window::OnResize(int width, int height)
-{
-	callbacks.OnResize(width, height);
-}
-
-WindowCallbacks::WindowCallbacks()
-{
-	OnRender = [](Window*, double) {};
-	OnResize = [](int, int) {};
 }
