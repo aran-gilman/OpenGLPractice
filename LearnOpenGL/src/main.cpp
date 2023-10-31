@@ -12,6 +12,7 @@
 #include "Mesh.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Transform.h"
 #include "Window.h"
 
 const char* vertexShaderSource = R"shader(
@@ -53,10 +54,9 @@ public:
 		window(800, 600, "OpenGL Tutorial"),
 		material(std::make_shared<Shader>(vertexShaderSource, fragmentShaderSource), std::make_shared<Texture>("resources/Ground_02.png")),
 		mesh(Mesh::MakeCube()),
-		transform(glm::mat4(1.0f)),
+		meshTransform(),
 		view(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -1.0f, -10.0f))),
-		projection(glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f)),
-		rotation(0.0f)
+		projection(glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f))
 	{
 	}
 
@@ -65,12 +65,10 @@ public:
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		rotation += glm::radians(45.0f * (float)elapsedTime);
-		transform = glm::mat4(1.0f);
-		transform = glm::rotate(transform, rotation, glm::vec3(0.0f, 1.0f, 0.0f));
+		meshTransform.SetRotation(meshTransform.GetRotation() + glm::radians(45.0f * (float)elapsedTime));
 
 		material.Use();
-		material.GetShader()->Set4("transform", glm::value_ptr(transform));
+		material.GetShader()->Set4("transform", meshTransform.GetMatrixPtr());
 		material.GetShader()->Set4("view", glm::value_ptr(view));
 		material.GetShader()->Set4("projection", glm::value_ptr(projection));
 		mesh.Draw();
@@ -105,11 +103,9 @@ private:
 	Material material;
 	Mesh mesh;
 
-	glm::mat4 transform;
+	Transform meshTransform;
 	glm::mat4 view;
 	glm::mat4 projection;
-
-	float rotation;
 };
 
 int main()
