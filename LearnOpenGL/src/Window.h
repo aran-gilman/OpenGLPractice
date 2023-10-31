@@ -24,8 +24,10 @@ public:
 	void Close();
 
 private:
-
 	GLFWwindow* window;
+	std::function<void(int, int)> resizeCallback;
+
+	void OnResize(int width, int height);
 };
 
 #endif

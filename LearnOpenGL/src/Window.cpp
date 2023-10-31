@@ -35,15 +35,23 @@ Window::Window(int width, int height, const std::string& title)
 		glfwTerminate();
 	}
 
+	glfwSetWindowUserPointer(window, this);
 	glfwMakeContextCurrent(window);
 	glViewport(0, 0, width, height);
-	glfwSetFramebufferSizeCallback(window, [](GLFWwindow*, int, int) { windowResized = true; });
+	glfwSetFramebufferSizeCallback(window,
+		[](GLFWwindow* window, int width, int height)
+		{
+			Window* user = static_cast<Window*>(glfwGetWindowUserPointer(window));
+			user->OnResize(width, height);
+		});
 
 	GLenum err = glewInit();
 	if (err != GLEW_OK)
 	{
 		std::cout << "ERROR: Failed to initialize GLEW: " << glewGetErrorString(err) << std::endl;
 	}
+
+	resizeCallback = [](int, int) {};
 }
 
 Window::~Window()
@@ -54,7 +62,11 @@ Window::~Window()
 void Window::Run(WindowCallbacks callbacks)
 {
 	std::function<void(Window*, double)> onRender = callbacks.OnRender.value_or([](Window*, double) {});
-	std::function<void(int, int)> onResize = callbacks.OnResize.value_or([](int, int) {});
+
+	if (callbacks.OnResize.has_value())
+	{
+		resizeCallback = callbacks.OnResize.value();
+	}
 
 	double previousTime = glfwGetTime();
 	double currentTime = previousTime;
@@ -62,13 +74,6 @@ void Window::Run(WindowCallbacks callbacks)
 	{
 		previousTime = currentTime;
 		currentTime = glfwGetTime();
-		if (windowResized)
-		{
-			int width, height;
-			glfwGetFramebufferSize(window, &width, &height);
-			onResize(width, height);
-			windowResized = false;
-		}
 		processInput(window);
 		onRender(this, currentTime - previousTime);
 		glfwSwapBuffers(window);
@@ -79,4 +84,9 @@ void Window::Run(WindowCallbacks callbacks)
 void Window::Close()
 {
 	glfwSetWindowShouldClose(window, true);
+}
+
+void Window::OnResize(int width, int height)
+{
+	resizeCallback(width, height);
 }
