@@ -50,8 +50,6 @@ Window::Window(int width, int height, const std::string& title)
 	{
 		std::cout << "ERROR: Failed to initialize GLEW: " << glewGetErrorString(err) << std::endl;
 	}
-
-	resizeCallback = [](int, int) {};
 }
 
 Window::~Window()
@@ -61,13 +59,7 @@ Window::~Window()
 
 void Window::Run(WindowCallbacks callbacks)
 {
-	std::function<void(Window*, double)> onRender = callbacks.OnRender.value_or([](Window*, double) {});
-
-	if (callbacks.OnResize.has_value())
-	{
-		resizeCallback = callbacks.OnResize.value();
-	}
-
+	this->callbacks = callbacks;
 	double previousTime = glfwGetTime();
 	double currentTime = previousTime;
 	while (!glfwWindowShouldClose(window))
@@ -75,7 +67,7 @@ void Window::Run(WindowCallbacks callbacks)
 		previousTime = currentTime;
 		currentTime = glfwGetTime();
 		processInput(window);
-		onRender(this, currentTime - previousTime);
+		callbacks.OnRender(this, currentTime - previousTime);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
@@ -88,5 +80,11 @@ void Window::Close()
 
 void Window::OnResize(int width, int height)
 {
-	resizeCallback(width, height);
+	callbacks.OnResize(width, height);
+}
+
+WindowCallbacks::WindowCallbacks()
+{
+	OnRender = [](Window*, double) {};
+	OnResize = [](int, int) {};
 }

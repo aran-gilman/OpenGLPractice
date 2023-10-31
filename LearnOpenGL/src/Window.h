@@ -10,8 +10,10 @@ class Window;
 
 struct WindowCallbacks
 {
-	std::optional<std::function<void(Window*, double)>> OnRender;
-	std::optional<std::function<void(int width, int height)>> OnResize;
+	std::function<void(Window*, double)> OnRender;
+	std::function<void(int width, int height)> OnResize;
+
+	WindowCallbacks();
 };
 
 class Window
@@ -25,7 +27,7 @@ public:
 
 private:
 	GLFWwindow* window;
-	std::function<void(int, int)> resizeCallback;
+	WindowCallbacks callbacks;
 
 	void OnResize(int width, int height);
 };
