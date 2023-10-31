@@ -85,6 +85,13 @@ public:
 
 	void OnKeyInput(int keyToken, int scancode, int action, int mods) override
 	{
+		if (action == GLFW_PRESS)
+		{
+			if (keyToken == GLFW_KEY_ESCAPE)
+			{
+				window.Close();
+			}
+		}
 	}
 
 	void Run()

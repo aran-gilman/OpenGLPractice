@@ -6,19 +6,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-namespace
-{
-	// TODO: Figure out a good way to abstract this
-	void processInput(GLFWwindow* window)
-	{
-		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		{
-			glfwSetWindowShouldClose(window, true);
-		}
-	}
-}
-
-Window::Window(int width, int height, const std::string& title)
+Window::Window(int width, int height, const std::string& title) : listener(nullptr)
 {
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -65,6 +53,12 @@ void Window::Run(IWindowListener* listener)
 			Window* user = static_cast<Window*>(glfwGetWindowUserPointer(window));
 			user->listener->OnResize(width, height);
 		});
+	glfwSetKeyCallback(window,
+		[](GLFWwindow* window, int keyToken, int scancode, int action, int mods)
+		{
+			Window* user = static_cast<Window*>(glfwGetWindowUserPointer(window));
+			user->listener->OnKeyInput(keyToken, scancode, action, mods);
+		});
 
 	double previousTime = glfwGetTime();
 	double currentTime = previousTime;
@@ -72,7 +66,6 @@ void Window::Run(IWindowListener* listener)
 	{
 		previousTime = currentTime;
 		currentTime = glfwGetTime();
-		processInput(window);
 		this->listener->OnUpdate(this, currentTime - previousTime);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
