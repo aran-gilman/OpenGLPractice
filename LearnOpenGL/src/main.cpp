@@ -46,10 +46,6 @@ void main()
     FragColor = texture(inTexture, texCoord);
 })shader";
 
-void onFramebufferSizeChange(int width, int height)
-{
-	glViewport(0, 0, width, height);
-}
 
 int main()
 {
@@ -87,7 +83,11 @@ int main()
 			mesh.Draw();
 			glBindTexture(GL_TEXTURE_2D, 0);
 		};
-	callbacks.OnResize = onFramebufferSizeChange;
+	callbacks.OnResize = [&](int width, int height)
+		{
+			glViewport(0, 0, width, height);
+			projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
+		};
 	window.Run(callbacks);
 
 	return 0;
