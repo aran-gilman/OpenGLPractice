@@ -55,7 +55,7 @@ public:
 		material(std::make_shared<Shader>(vertexShaderSource, fragmentShaderSource), std::make_shared<Texture>("resources/Ground_02.png")),
 		mesh(Mesh::MakeCube()),
 		meshTransform(),
-		view(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -1.0f, -10.0f))),
+		cameraTransform(glm::vec3(0.0f, -1.0f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)),
 		projection(glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f))
 	{
 	}
@@ -69,7 +69,7 @@ public:
 
 		material.Use();
 		material.GetShader()->Set4("transform", meshTransform.GetMatrixPtr());
-		material.GetShader()->Set4("view", glm::value_ptr(view));
+		material.GetShader()->Set4("view", cameraTransform.GetMatrixPtr());
 		material.GetShader()->Set4("projection", glm::value_ptr(projection));
 		mesh.Draw();
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -104,7 +104,8 @@ private:
 	Mesh mesh;
 
 	Transform meshTransform;
-	glm::mat4 view;
+	Transform cameraTransform;
+
 	glm::mat4 projection;
 };
 
