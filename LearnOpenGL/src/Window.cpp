@@ -7,10 +7,6 @@
 
 namespace
 {
-	// Because GLFW's framebuffer resizing uses a function pointer, we can't pass in a non-static member function or a capturing lambda.
-	// So, if we want to wrap the callback and hide the use of GLFW from Window users, we have to use some sort of static state.
-	static bool windowResized = false;
-
 	// TODO: Figure out a good way to abstract this
 	void processInput(GLFWwindow* window)
 	{
