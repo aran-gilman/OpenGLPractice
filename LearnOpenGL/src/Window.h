@@ -14,7 +14,7 @@ public:
 	virtual void OnUpdate(Window* window, double elapsedTime) = 0;
 	virtual void OnResize(int width, int height) = 0;
 	virtual void OnKeyInput(int keyToken, int scancode, int action, int mods) = 0;
-	virtual void OnMousePosition(double x, double y) = 0;
+	virtual void OnMousePosition(double x, double y, double xOffset, double yOffset) = 0;
 };
 
 class Window
@@ -29,6 +29,9 @@ public:
 private:
 	GLFWwindow* window;
 	IWindowListener* listener;
+
+	double previousMouseX;
+	double previousMouseY;
 };
 
 #endif

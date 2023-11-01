@@ -59,11 +59,17 @@ void Window::Run(IWindowListener* listener)
 			Window* user = static_cast<Window*>(glfwGetWindowUserPointer(window));
 			user->listener->OnKeyInput(keyToken, scancode, action, mods);
 		});
+
+	glfwGetCursorPos(window, &previousMouseX, &previousMouseY);
 	glfwSetCursorPosCallback(window,
-		[](GLFWwindow* window, double x, double y)
+		[](GLFWwindow* window, double xPos, double yPos)
 		{
 			Window* user = static_cast<Window*>(glfwGetWindowUserPointer(window));
-			user->listener->OnMousePosition(x, y);
+			double xOffset = user->previousMouseX - xPos;
+			double yOffset = user->previousMouseY - yPos;
+			user->previousMouseX = xPos;
+			user->previousMouseY = yPos;
+			user->listener->OnMousePosition(xPos, yPos, xOffset, yOffset);
 		});
 
 	double previousTime = glfwGetTime();
