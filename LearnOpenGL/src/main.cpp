@@ -150,7 +150,7 @@ public:
 		}
 	}
 
-	void OnMousePosition(double x, double y)
+	void OnMousePosition(double x, double y, double xOffset, double yOffset)
 	{
 	}
 
