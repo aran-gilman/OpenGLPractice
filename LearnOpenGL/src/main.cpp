@@ -58,7 +58,7 @@ public:
 		material(std::make_shared<Shader>(vertexShaderSource, fragmentShaderSource), std::make_shared<Texture>("resources/Ground_02.png")),
 		mesh(Mesh::MakeCube()),
 		meshTransforms(std::vector<Transform>(10)),
-		camera(glm::vec3(0.0f, -1.0f, -10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 800, 600)
+		camera(glm::vec3(0.0f, -1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 800, 600)
 	{
 		for (Transform& transform : meshTransforms)
 		{

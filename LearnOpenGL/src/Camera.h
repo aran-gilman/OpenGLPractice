@@ -28,6 +28,8 @@ private:
 	glm::vec3 heading;
 	glm::vec3 front;
 
+	glm::vec3 up;
+
 	glm::mat4 view;
 	glm::mat4 projection;
 
