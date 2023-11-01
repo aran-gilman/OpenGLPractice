@@ -57,10 +57,9 @@ public:
 		material(std::make_shared<Shader>(vertexShaderSource, fragmentShaderSource), std::make_shared<Texture>("resources/Ground_02.png")),
 		mesh(Mesh::MakeCube()),
 		meshTransforms(std::vector<Transform>(10)),
-		cameraTransform(glm::vec3(0.0f, -1.0f, 10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)),
+		cameraTransform(glm::vec3(0.0f, -1.0f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)),
 		projection(glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f)),
-		cameraHeading(glm::vec3(0.0f, 0.0f, 0.0f)),
-		cameraFront(glm::vec3(0.0f, 0.0f, -1.0f))
+		cameraHeading(glm::vec3(0.0f, 0.0f, 0.0f))
 	{
 		for (Transform& transform : meshTransforms)
 		{
@@ -76,7 +75,6 @@ public:
 	void OnUpdate(Window* window, double elapsedTime) override
 	{
 		cameraTransform.Translate(cameraHeading * 3.5f * (float)elapsedTime);
-		cameraTransform.LookAt(cameraTransform.GetPosition() + cameraFront);
 
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -109,22 +107,22 @@ public:
 
 			if (keyToken == GLFW_KEY_A || keyToken == GLFW_KEY_LEFT)
 			{
-				cameraHeading.x -= 1.0f;
+				cameraHeading.x += 1.0f;
 			}
 
 			if (keyToken == GLFW_KEY_D || keyToken == GLFW_KEY_RIGHT)
 			{
-				cameraHeading.x += 1.0f;
+				cameraHeading.x -= 1.0f;
 			}
 
 			if (keyToken == GLFW_KEY_S || keyToken == GLFW_KEY_DOWN)
 			{
-				cameraHeading.z += 1.0f;
+				cameraHeading.z -= 1.0f;
 			}
 
 			if (keyToken == GLFW_KEY_W || keyToken == GLFW_KEY_UP)
 			{
-				cameraHeading.z -= 1.0f;
+				cameraHeading.z += 1.0f;
 			}
 		}
 
@@ -132,27 +130,27 @@ public:
 		{
 			if (keyToken == GLFW_KEY_A || keyToken == GLFW_KEY_LEFT)
 			{
-				cameraHeading.x += 1.0f;
+				cameraHeading.x -= 1.0f;
 			}
 
 			if (keyToken == GLFW_KEY_D || keyToken == GLFW_KEY_RIGHT)
 			{
-				cameraHeading.x -= 1.0f;
+				cameraHeading.x += 1.0f;
 			}
 
 			if (keyToken == GLFW_KEY_S || keyToken == GLFW_KEY_DOWN)
 			{
-				cameraHeading.z -= 1.0f;
+				cameraHeading.z += 1.0f;
 			}
 
 			if (keyToken == GLFW_KEY_W || keyToken == GLFW_KEY_UP)
 			{
-				cameraHeading.z += 1.0f;
+				cameraHeading.z -= 1.0f;
 			}
 		}
 	}
 
-	void OnMousePosition(double x, double y, double xOffset, double yOffset)
+	void OnMousePosition(double x, double y)
 	{
 	}
 
@@ -170,7 +168,6 @@ private:
 	std::vector<Transform> meshTransforms;
 	Transform cameraTransform;
 	glm::vec3 cameraHeading;
-	glm::vec3 cameraFront;
 
 	glm::mat4 projection;
 };
