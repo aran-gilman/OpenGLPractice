@@ -10,7 +10,7 @@ Transform::Transform(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) : 
 	Set(position, rotation, scale);
 }
 
-float* Transform::GetMatrixPtr()
+const float* Transform::GetMatrixPtr() const
 {
 	return glm::value_ptr(matrix);
 }
