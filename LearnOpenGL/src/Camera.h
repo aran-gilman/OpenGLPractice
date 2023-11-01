@@ -24,11 +24,11 @@ public:
 	void Use(Material* material);
 
 private:
-	Transform transform;
-
+	glm::vec3 position;
 	glm::vec3 heading;
 	glm::vec3 front;
 
+	glm::mat4 view;
 	glm::mat4 projection;
 
 	int width;

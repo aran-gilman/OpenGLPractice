@@ -4,10 +4,13 @@
 #include "Shader.h"
 
 Camera::Camera(glm::vec3 position, glm::vec3 front, float width, float height) :
-	transform(position, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)),
-	front(front),
-	projection(glm::perspective(glm::radians(45.0f), width / height, 0.1f, 100.0f)),
+	position(position),
 	heading(glm::vec3(0.0f, 0.0f, 0.0f)),
+	front(front),
+
+	view(glm::mat4(1.0f)),
+	projection(glm::perspective(glm::radians(45.0f), width / height, 0.1f, 100.0f)),
+
 	width(width),
 	height(height)
 {
@@ -15,7 +18,10 @@ Camera::Camera(glm::vec3 position, glm::vec3 front, float width, float height) :
 
 void Camera::OnUpdate(double elapsedTime)
 {
-	transform.Translate(heading * 3.5f * (float)elapsedTime);
+	position += heading * 3.5f * (float)elapsedTime;
+
+	view = glm::mat4(1.0f);
+	view = glm::translate(view, position);
 }
 
 void Camera::OnKeyInput(int keyToken, int scancode, int action, int mods)
@@ -77,6 +83,6 @@ void Camera::OnResize(int width, int height)
 void Camera::Use(Material* material)
 {
 	glViewport(0, 0, width, height);
-	material->GetShader()->Set4("view", transform.GetMatrixPtr());
+	material->GetShader()->Set4("view", glm::value_ptr(view));
 	material->GetShader()->Set4("projection", glm::value_ptr(projection));
 }
