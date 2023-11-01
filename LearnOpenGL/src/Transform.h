@@ -25,6 +25,8 @@ public:
 	void LookAt(glm::vec3 otherPosition);
 	void LookAt(glm::vec3 otherPosition, glm::vec3 newPosition);
 
+	void Translate(glm::vec3 delta) { SetPosition(position + delta); }
+
 private:
 	glm::vec3 position;
 	glm::vec3 rotation;

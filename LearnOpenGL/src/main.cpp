@@ -58,7 +58,8 @@ public:
 		mesh(Mesh::MakeCube()),
 		meshTransforms(std::vector<Transform>(10)),
 		cameraTransform(glm::vec3(0.0f, -1.0f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)),
-		projection(glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f))
+		projection(glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f)),
+		cameraHeading(glm::vec3(0.0f, 0.0f, 0.0f))
 	{
 		for (Transform& transform : meshTransforms)
 		{
@@ -73,6 +74,8 @@ public:
 
 	void OnUpdate(Window* window, double elapsedTime) override
 	{
+		cameraTransform.Translate(cameraHeading * 3.5f * (float)elapsedTime);
+
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -101,6 +104,49 @@ public:
 			{
 				window.Close();
 			}
+
+			if (keyToken == GLFW_KEY_A || keyToken == GLFW_KEY_LEFT)
+			{
+				cameraHeading.x += 1.0f;
+			}
+
+			if (keyToken == GLFW_KEY_D || keyToken == GLFW_KEY_RIGHT)
+			{
+				cameraHeading.x -= 1.0f;
+			}
+
+			if (keyToken == GLFW_KEY_S || keyToken == GLFW_KEY_DOWN)
+			{
+				cameraHeading.y += 1.0f;
+			}
+
+			if (keyToken == GLFW_KEY_W || keyToken == GLFW_KEY_UP)
+			{
+				cameraHeading.y -= 1.0f;
+			}
+		}
+
+		if (action == GLFW_RELEASE)
+		{
+			if (keyToken == GLFW_KEY_A || keyToken == GLFW_KEY_LEFT)
+			{
+				cameraHeading.x -= 1.0f;
+			}
+
+			if (keyToken == GLFW_KEY_D || keyToken == GLFW_KEY_RIGHT)
+			{
+				cameraHeading.x += 1.0f;
+			}
+
+			if (keyToken == GLFW_KEY_S || keyToken == GLFW_KEY_DOWN)
+			{
+				cameraHeading.y -= 1.0f;
+			}
+
+			if (keyToken == GLFW_KEY_W || keyToken == GLFW_KEY_UP)
+			{
+				cameraHeading.y += 1.0f;
+			}
 		}
 	}
 
@@ -117,6 +163,7 @@ private:
 
 	std::vector<Transform> meshTransforms;
 	Transform cameraTransform;
+	glm::vec3 cameraHeading;
 
 	glm::mat4 projection;
 };
