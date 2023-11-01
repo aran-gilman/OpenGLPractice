@@ -59,6 +59,12 @@ void Window::Run(IWindowListener* listener)
 			Window* user = static_cast<Window*>(glfwGetWindowUserPointer(window));
 			user->listener->OnKeyInput(keyToken, scancode, action, mods);
 		});
+	glfwSetCursorPosCallback(window,
+		[](GLFWwindow* window, double x, double y)
+		{
+			Window* user = static_cast<Window*>(glfwGetWindowUserPointer(window));
+			user->listener->OnMousePosition(x, y);
+		});
 
 	double previousTime = glfwGetTime();
 	double currentTime = previousTime;

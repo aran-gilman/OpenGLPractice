@@ -150,6 +150,10 @@ public:
 		}
 	}
 
+	void OnMousePosition(double x, double y)
+	{
+	}
+
 	void Run()
 	{
 		window.Run(this);
