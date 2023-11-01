@@ -22,6 +22,8 @@ public:
 	void SetRotation(glm::vec3 newRotation) { Set(position, newRotation, scale); }
 	void SetScale(glm::vec3 newScale) { Set(position, rotation, newScale); }
 
+	void LookAt(glm::vec3 otherPosition);
+
 private:
 	glm::vec3 position;
 	glm::vec3 rotation;

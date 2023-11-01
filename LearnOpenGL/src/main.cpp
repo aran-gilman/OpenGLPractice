@@ -54,7 +54,7 @@ public:
 		window(800, 600, "OpenGL Tutorial"),
 		material(std::make_shared<Shader>(vertexShaderSource, fragmentShaderSource), std::make_shared<Texture>("resources/Ground_02.png")),
 		mesh(Mesh::MakeCube()),
-		meshTransform(),
+		meshTransform(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(glm::radians(45.0f), 0.0f, glm::radians(45.0f)), glm::vec3(1.0f, 1.0f, 1.0f)),
 		cameraTransform(glm::vec3(0.0f, -1.0f, -10.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f)),
 		projection(glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100.0f))
 	{
@@ -65,7 +65,7 @@ public:
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		meshTransform.SetRotation(meshTransform.GetRotation() + glm::radians(45.0f * (float)elapsedTime));
+		meshTransform.SetRotation(meshTransform.GetRotation() + glm::vec3(0.0f, glm::radians(45.0f * (float)elapsedTime), 0.0f));
 
 		material.Use();
 		material.GetShader()->Set4("transform", meshTransform.GetMatrixPtr());
