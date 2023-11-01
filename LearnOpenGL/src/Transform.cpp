@@ -39,3 +39,9 @@ void Transform::LookAt(glm::vec3 otherPosition)
 
 	matrix = glm::scale(matrix, scale);
 }
+
+void Transform::LookAt(glm::vec3 otherPosition, glm::vec3 newPosition)
+{
+	position = newPosition;
+	LookAt(otherPosition);
+}
