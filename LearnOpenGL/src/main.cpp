@@ -117,12 +117,12 @@ public:
 
 			if (keyToken == GLFW_KEY_S || keyToken == GLFW_KEY_DOWN)
 			{
-				cameraHeading.y += 1.0f;
+				cameraHeading.z -= 1.0f;
 			}
 
 			if (keyToken == GLFW_KEY_W || keyToken == GLFW_KEY_UP)
 			{
-				cameraHeading.y -= 1.0f;
+				cameraHeading.z += 1.0f;
 			}
 		}
 
@@ -140,12 +140,12 @@ public:
 
 			if (keyToken == GLFW_KEY_S || keyToken == GLFW_KEY_DOWN)
 			{
-				cameraHeading.y -= 1.0f;
+				cameraHeading.z += 1.0f;
 			}
 
 			if (keyToken == GLFW_KEY_W || keyToken == GLFW_KEY_UP)
 			{
-				cameraHeading.y += 1.0f;
+				cameraHeading.z -= 1.0f;
 			}
 		}
 	}
