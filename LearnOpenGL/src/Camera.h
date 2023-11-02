@@ -20,6 +20,7 @@ public:
 	void OnUpdate(double elapsedTime);
 	void OnKeyInput(int keyToken, int scancode, int action, int mods);
 	void OnResize(int width, int height);
+	void OnCursorMove(double xOffset, double yOffset);
 
 	void Use(Material* material);
 
@@ -35,6 +36,10 @@ private:
 
 	int width;
 	int height;
+
+	float mouseSensitivity;
+	float pitch;
+	float yaw;
 };
 
 #endif

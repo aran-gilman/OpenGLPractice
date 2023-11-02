@@ -107,6 +107,7 @@ public:
 
 	void OnMousePosition(double x, double y, double xOffset, double yOffset)
 	{
+		camera.OnCursorMove(xOffset, yOffset);
 	}
 
 	void Run()

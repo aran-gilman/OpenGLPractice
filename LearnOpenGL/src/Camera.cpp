@@ -14,7 +14,7 @@ namespace
 Camera::Camera(glm::vec3 position, glm::vec3 front, float width, float height) :
 	position(position),
 	heading(glm::vec3(0.0f, 0.0f, 0.0f)),
-	front(front),
+	front(glm::normalize(front)),
 
 	up(glm::vec3(0.0f, 1.0f, 0.0f)),
 
@@ -22,7 +22,11 @@ Camera::Camera(glm::vec3 position, glm::vec3 front, float width, float height) :
 	projection(glm::perspective(glm::radians(45.0f), width / height, 0.1f, 100.0f)),
 
 	width(width),
-	height(height)
+	height(height),
+
+	mouseSensitivity(0.1f),
+	pitch(glm::degrees(std::asin(this->front.y))),
+	yaw(glm::degrees(std::asin(this->front.z / std::cos(glm::radians(pitch)))))
 {
 	view = CalculateViewMatrix(position, front, up);
 }
@@ -87,6 +91,25 @@ void Camera::OnResize(int width, int height)
 	projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
 	this->width = width;
 	this->height = height;
+}
+
+void Camera::OnCursorMove(double xOffset, double yOffset)
+{
+	yaw += (xOffset * mouseSensitivity);
+	pitch += (-yOffset * mouseSensitivity);
+
+	if (pitch > 89.0f)
+	{
+		pitch = 89.0f;
+	}
+	else if (pitch < -89.0f)
+	{
+		pitch = -89.0f;
+	}
+
+	front.x = std::cos(glm::radians(yaw)) * std::cos(glm::radians(pitch));
+	front.y = std::sin(glm::radians(pitch));
+	front.z = std::sin(glm::radians(yaw)) * std::cos(glm::radians(pitch));
 }
 
 void Camera::Use(Material* material)
