@@ -88,3 +88,21 @@ void Window::Close()
 {
 	glfwSetWindowShouldClose(window, true);
 }
+
+void Window::SetCursorMode(CursorMode mode)
+{
+	switch (mode)
+	{
+	case Window::CursorMode::Locked:
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		break;
+	case Window::CursorMode::Hidden:
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+		break;
+	case Window::CursorMode::Normal:
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		break;
+	default:
+		break;
+	}
+}

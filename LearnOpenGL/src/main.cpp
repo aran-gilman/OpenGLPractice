@@ -69,6 +69,8 @@ public:
 				glm::vec3(1.0f, 1.0f, 1.0f)
 			);
 		}
+
+		window.SetCursorMode(Window::CursorMode::Locked);
 	}
 
 	void OnUpdate(Window* window, double elapsedTime) override

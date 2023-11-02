@@ -20,11 +20,20 @@ public:
 class Window
 {
 public:
+
 	Window(int width, int height, const std::string& title);
 	~Window();
 
 	void Run(IWindowListener* windowListener);
 	void Close();
+
+	enum class CursorMode
+	{
+		Locked,
+		Hidden,
+		Normal,
+	};
+	void SetCursorMode(CursorMode mode);
 
 private:
 	GLFWwindow* window;
