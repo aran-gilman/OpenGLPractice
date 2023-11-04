@@ -10,7 +10,7 @@ template<class... TArgs>
 class Event
 {
 public:
-	Event() {}
+	Event() : nextHandle(0) {}
 
 	void Invoke(TArgs... args)
 	{

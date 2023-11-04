@@ -32,6 +32,7 @@ Window::Window(int width, int height, const std::string& title)
 	}
 
 	glEnable(GL_DEPTH_TEST);
+	glfwGetCursorPos(window, &previousCursorX, &previousCursorY);
 }
 
 Window::~Window()
@@ -54,7 +55,6 @@ void Window::Run()
 			user->OnKeyInput().Invoke(keyToken, scancode, action, mods);
 		});
 
-	glfwGetCursorPos(window, &previousCursorX, &previousCursorY);
 	glfwSetCursorPosCallback(window,
 		[](GLFWwindow* window, double x, double y)
 		{
