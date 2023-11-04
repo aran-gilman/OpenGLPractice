@@ -4,18 +4,9 @@
 #include <memory>
 #include <string>
 
-class GLFWwindow;
-class Window;
+#include "Event.h"
 
-class IWindowListener
-{
-public:
-	virtual ~IWindowListener() {}
-	virtual void OnUpdate(Window* window, double elapsedTime) = 0;
-	virtual void OnResize(int width, int height) = 0;
-	virtual void OnKeyInput(int keyToken, int scancode, int action, int mods) = 0;
-	virtual void OnMousePosition(double x, double y, double xOffset, double yOffset) = 0;
-};
+class GLFWwindow;
 
 class Window
 {
@@ -24,7 +15,7 @@ public:
 	Window(int width, int height, const std::string& title);
 	~Window();
 
-	void Run(IWindowListener* windowListener);
+	void Run();
 	void Close();
 
 	enum class CursorMode
@@ -35,12 +26,21 @@ public:
 	};
 	void SetCursorMode(CursorMode mode);
 
+	Event<const double&>& OnUpdate() { return onUpdate; }
+	Event<int, int>& OnResize() { return onResize; }
+	Event<int, int, int, int>& OnKeyInput() { return onKeyInput; }
+	Event<double, double, double, double>& OnMousePosition() { return onMousePosition; }
+
 private:
 	GLFWwindow* window;
-	IWindowListener* listener;
 
 	double previousCursorX;
 	double previousCursorY;
+
+	Event<const double&> onUpdate;
+	Event<int, int> onResize;
+	Event<int, int, int, int> onKeyInput;
+	Event<double, double, double, double> onMousePosition;
 };
 
 #endif

@@ -96,7 +96,7 @@ void Camera::OnResize(int width, int height)
 	this->height = height;
 }
 
-void Camera::OnCursorMove(double xOffset, double yOffset)
+void Camera::OnCursorMove(double xPos, double yPos, double xOffset, double yOffset)
 {
 	yaw += (xOffset * mouseSensitivity);
 	pitch += (-yOffset * mouseSensitivity);

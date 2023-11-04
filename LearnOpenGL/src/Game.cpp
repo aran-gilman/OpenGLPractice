@@ -1,6 +1,7 @@
 #include "Game.h"
 
 #include <cmath>
+#include <functional>
 #include <iostream>
 #include <memory>
 
@@ -17,6 +18,7 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "Transform.h"
+
 
 namespace {
 	
@@ -85,13 +87,25 @@ Game::Game() :
 	}
 
 	window.SetCursorMode(Window::CursorMode::Locked);
+
+	window.OnUpdate().Register(std::bind_front(&Game::OnUpdate, this));
+	window.OnKeyInput().Register(std::bind_front(&Game::OnKeyInput, this));
+
+	window.OnKeyInput().Register(std::bind_front(&Camera::OnKeyInput, &(gameData->camera)));
+	window.OnMousePosition().Register(std::bind_front(&Camera::OnCursorMove, &(gameData->camera)));
+	window.OnResize().Register(std::bind_front(&Camera::OnResize, &(gameData->camera)));
 }
 
 Game::~Game()
 {
 }
 
-void Game::OnUpdate(Window* window, double elapsedTime)
+void Game::Run()
+{
+	window.Run();
+}
+
+void Game::OnUpdate(double elapsedTime)
 {
 	gameData->camera.OnUpdate(elapsedTime);
 
@@ -108,29 +122,10 @@ void Game::OnUpdate(Window* window, double elapsedTime)
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Game::OnResize(int width, int height)
-{
-	gameData->camera.OnResize(width, height);
-}
-
 void Game::OnKeyInput(int keyToken, int scancode, int action, int mods)
 {
 	if (action == GLFW_PRESS && keyToken == GLFW_KEY_ESCAPE)
 	{
 		window.Close();
 	}
-	else
-	{
-		gameData->camera.OnKeyInput(keyToken, scancode, action, mods);
-	}
-}
-
-void Game::OnMousePosition(double x, double y, double xOffset, double yOffset)
-{
-	gameData->camera.OnCursorMove(xOffset, yOffset);
-}
-
-void Game::Run()
-{
-	window.Run(this);
 }

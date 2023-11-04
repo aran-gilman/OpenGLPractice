@@ -6,7 +6,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-Window::Window(int width, int height, const std::string& title) : listener(nullptr)
+Window::Window(int width, int height, const std::string& title)
 {
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -39,25 +39,19 @@ Window::~Window()
 	glfwTerminate();
 }
 
-void Window::Run(IWindowListener* listener)
+void Window::Run()
 {
-	if (listener == nullptr)
-	{
-		throw std::invalid_argument("listener must be non-null");
-	}
-
-	this->listener = listener;
 	glfwSetFramebufferSizeCallback(window,
 		[](GLFWwindow* window, int width, int height)
 		{
 			Window* user = static_cast<Window*>(glfwGetWindowUserPointer(window));
-			user->listener->OnResize(width, height);
+			user->OnResize().Invoke(width, height);
 		});
 	glfwSetKeyCallback(window,
 		[](GLFWwindow* window, int keyToken, int scancode, int action, int mods)
 		{
 			Window* user = static_cast<Window*>(glfwGetWindowUserPointer(window));
-			user->listener->OnKeyInput(keyToken, scancode, action, mods);
+			user->OnKeyInput().Invoke(keyToken, scancode, action, mods);
 		});
 
 	glfwGetCursorPos(window, &previousCursorX, &previousCursorY);
@@ -69,7 +63,7 @@ void Window::Run(IWindowListener* listener)
 			double yOffset = y - user->previousCursorY;
 			user->previousCursorX = x;
 			user->previousCursorY = y;
-			user->listener->OnMousePosition(x, y, xOffset, yOffset);
+			user->OnMousePosition().Invoke(x, y, xOffset, yOffset);
 		});
 
 	double previousTime = glfwGetTime();
@@ -78,7 +72,7 @@ void Window::Run(IWindowListener* listener)
 	{
 		previousTime = currentTime;
 		currentTime = glfwGetTime();
-		this->listener->OnUpdate(this, currentTime - previousTime);
+		this->OnUpdate().Invoke(currentTime - previousTime);
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

@@ -8,6 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Event.h"
 #include "Transform.h"
 
 class Material;
@@ -20,7 +21,7 @@ public:
 	void OnUpdate(double elapsedTime);
 	void OnKeyInput(int keyToken, int scancode, int action, int mods);
 	void OnResize(int width, int height);
-	void OnCursorMove(double xOffset, double yOffset);
+	void OnCursorMove(double xPos, double yPos, double xOffset, double yOffset);
 
 	void Use(Material* material);
 
