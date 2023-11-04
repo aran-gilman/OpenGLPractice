@@ -11,6 +11,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Camera.h"
+#include "Material.h"
+#include "Mesh.h"
+#include "Shader.h"
+#include "Texture.h"
+#include "Transform.h"
+
 namespace {
 	
 	const char* vertexShaderSource = R"shader(
@@ -44,16 +51,30 @@ void main()
 {
     FragColor = texture(inTexture, texCoord);
 })shader";
+
 }
 
-Game::Game() :
-	window(800, 600, "OpenGL Tutorial"),
-	material(std::make_shared<Shader>(vertexShaderSource, fragmentShaderSource), std::make_shared<Texture>("resources/Ground_02.png")),
-	mesh(Mesh::MakeCube()),
-	meshTransforms(std::vector<Transform>(10)),
-	camera(glm::vec3(0.0f, -1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 800, 600)
+// Not a permanent solution, but keeps more things out of the header file.
+struct GameData
 {
-	for (Transform& transform : meshTransforms)
+	Material material;
+	Mesh mesh;
+	Camera camera;
+
+	std::vector<Transform> meshTransforms;
+};
+
+Game::Game() :
+	window(800, 600, "OpenGL Tutorial")
+{
+	gameData = std::unique_ptr<GameData>(new GameData{
+		Material(std::make_shared<Shader>(vertexShaderSource, fragmentShaderSource), std::make_shared<Texture>("resources/Ground_02.png")),
+		Mesh::MakeCube(),
+		Camera(glm::vec3(0.0f, -1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 800, 600),
+		std::vector<Transform>(10)
+		});
+
+	for (Transform& transform : gameData->meshTransforms)
 	{
 		glm::vec3 position = glm::sphericalRand(glm::linearRand(0.0f, 10.f));
 		transform.Set(
@@ -66,26 +87,30 @@ Game::Game() :
 	window.SetCursorMode(Window::CursorMode::Locked);
 }
 
+Game::~Game()
+{
+}
+
 void Game::OnUpdate(Window* window, double elapsedTime)
 {
-	camera.OnUpdate(elapsedTime);
+	gameData->camera.OnUpdate(elapsedTime);
 
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	material.Use();
-	camera.Use(&material);
-	for (const Transform& transform : meshTransforms)
+	gameData->material.Use();
+	gameData->camera.Use(&gameData->material);
+	for (const Transform& transform : gameData->meshTransforms)
 	{
-		material.GetShader()->Set4("transform", transform.GetMatrixPtr());
-		mesh.Draw();
+		gameData->material.GetShader()->Set4("transform", transform.GetMatrixPtr());
+		gameData->mesh.Draw();
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Game::OnResize(int width, int height)
 {
-	camera.OnResize(width, height);
+	gameData->camera.OnResize(width, height);
 }
 
 void Game::OnKeyInput(int keyToken, int scancode, int action, int mods)
@@ -96,13 +121,13 @@ void Game::OnKeyInput(int keyToken, int scancode, int action, int mods)
 	}
 	else
 	{
-		camera.OnKeyInput(keyToken, scancode, action, mods);
+		gameData->camera.OnKeyInput(keyToken, scancode, action, mods);
 	}
 }
 
 void Game::OnMousePosition(double x, double y, double xOffset, double yOffset)
 {
-	camera.OnCursorMove(xOffset, yOffset);
+	gameData->camera.OnCursorMove(xOffset, yOffset);
 }
 
 void Game::Run()

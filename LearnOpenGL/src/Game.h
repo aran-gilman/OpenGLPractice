@@ -3,18 +3,15 @@
 
 #include <vector>
 
-#include "Camera.h"
-#include "Material.h"
-#include "Mesh.h"
-#include "Shader.h"
-#include "Texture.h"
-#include "Transform.h"
 #include "Window.h"
+
+struct GameData;
 
 class Game : IWindowListener
 {
 public:
 	Game();
+	~Game();
 
 	void OnUpdate(Window* window, double elapsedTime) override;
 	void OnResize(int width, int height) override;
@@ -25,12 +22,7 @@ public:
 
 private:
 	Window window;
-
-	Material material;
-	Mesh mesh;
-	Camera camera;
-
-	std::vector<Transform> meshTransforms;
+	std::unique_ptr<GameData> gameData;
 };
 
 #endif
