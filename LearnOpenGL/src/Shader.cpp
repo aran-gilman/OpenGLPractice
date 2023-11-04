@@ -1,15 +1,8 @@
 #include "Shader.h"
 
-#include <fstream>
-#include <sstream>
 #include <iostream>
 
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
-
-namespace {
-}
 
 Shader::Shader(const std::string& vertexShaderCode, const std::string& fragmentShaderCode)
 {
