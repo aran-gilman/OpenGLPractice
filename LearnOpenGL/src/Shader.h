@@ -1,21 +1,21 @@
 #ifndef SHADER_H
 #define SHADER_H
 
-#include <string>
+#include <string_view>
 
 class Shader
 {
 public:
-	Shader(const std::string& vertexShaderCode, const std::string& fragmentShaderCode);
+	Shader(std::string_view vertexShaderCode, std::string_view fragmentShaderCode);
 	~Shader();
 	void Use();
-	void Set(const std::string& name, bool value) const;
-	void Set(const std::string& name, int value) const;
-	void Set(const std::string& name, float value) const;
-	void Set(const std::string& name, float value0, float value1, float value2) const;
-	void Set(const std::string& name, float value0, float value1, float value2, float value3) const;
+	void Set(std::string_view name, bool value) const;
+	void Set(std::string_view name, int value) const;
+	void Set(std::string_view name, float value) const;
+	void Set(std::string_view name, float value0, float value1, float value2) const;
+	void Set(std::string_view name, float value0, float value1, float value2, float value3) const;
 
-	void Set4(const std::string& name, const float* value);
+	void Set4(std::string_view name, const float* value);
 
 private:
 	int id;

@@ -4,12 +4,12 @@
 
 #include <GL/glew.h>
 
-Shader::Shader(const std::string& vertexShaderCode, const std::string& fragmentShaderCode)
+Shader::Shader(std::string_view vertexShaderCode, std::string_view fragmentShaderCode)
 {
 	int success;
 	char infoLog[512];
 
-	const char* vertexShader = vertexShaderCode.c_str();
+	const char* vertexShader = vertexShaderCode.data();
 	unsigned int vertex = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertex, 1, &vertexShader, NULL);
 	glCompileShader(vertex);
@@ -20,7 +20,7 @@ Shader::Shader(const std::string& vertexShaderCode, const std::string& fragmentS
 		std::cerr << "Vertex shader compilation failed! " << infoLog << std::endl;
 	}
 
-	const char* fragmentShader = fragmentShaderCode.c_str();
+	const char* fragmentShader = fragmentShaderCode.data();
 	unsigned int fragment = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragment, 1, &fragmentShader, NULL);
 	glCompileShader(fragment);
@@ -56,32 +56,32 @@ void Shader::Use()
 	glUseProgram(id);
 }
 
-void Shader::Set(const std::string& name, bool value) const
+void Shader::Set(std::string_view name, bool value) const
 {
-	glUniform1i(glGetUniformLocation(id, name.c_str()), (int)value);
+	glUniform1i(glGetUniformLocation(id, name.data()), (int)value);
 }
 
-void Shader::Set(const std::string& name, int value) const
+void Shader::Set(std::string_view name, int value) const
 {
-	glUniform1i(glGetUniformLocation(id, name.c_str()), value);
+	glUniform1i(glGetUniformLocation(id, name.data()), value);
 }
 
-void Shader::Set(const std::string& name, float value) const
+void Shader::Set(std::string_view name, float value) const
 {
-	glUniform1f(glGetUniformLocation(id, name.c_str()), value);
+	glUniform1f(glGetUniformLocation(id, name.data()), value);
 }
 
-void Shader::Set(const std::string& name, float value0, float value1, float value2) const
+void Shader::Set(std::string_view name, float value0, float value1, float value2) const
 {
-	glUniform3f(glGetUniformLocation(id, name.c_str()), value0, value1, value2);
+	glUniform3f(glGetUniformLocation(id, name.data()), value0, value1, value2);
 }
 
-void Shader::Set(const std::string& name, float value0, float value1, float value2, float value3) const
+void Shader::Set(std::string_view name, float value0, float value1, float value2, float value3) const
 {
-	glUniform4f(glGetUniformLocation(id, name.c_str()), value0, value1, value2, value3);
+	glUniform4f(glGetUniformLocation(id, name.data()), value0, value1, value2, value3);
 }
 
-void Shader::Set4(const std::string& name, const float* value)
+void Shader::Set4(std::string_view name, const float* value)
 {
-	glUniformMatrix4fv(glGetUniformLocation(id, name.c_str()), 1, GL_FALSE, value);
+	glUniformMatrix4fv(glGetUniformLocation(id, name.data()), 1, GL_FALSE, value);
 }
