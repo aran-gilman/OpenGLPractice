@@ -1,9 +1,13 @@
 #include "Game.h"
 
 #include <cmath>
+#include <fstream>
 #include <functional>
 #include <iostream>
 #include <memory>
+#include <sstream>
+
+#include <filesystem>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -20,45 +24,16 @@
 #include "Texture.h"
 #include "Transform.h"
 
-
 namespace {
-	
-	const char* vertexShaderSource = R"shader(
-#version 330 core
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec3 aColor;
-layout (location = 2) in vec2 aTexCoord;
-
-layout (std140) uniform Camera
-{
-    mat4 view;
-    mat4 projection;
-};
-
-uniform mat4 transform;
-
-out vec3 vertexColor;
-out vec2 texCoord;
-
-void main()
-{
-    gl_Position = projection * view * transform * vec4(aPos, 1.0f);
-    texCoord = aTexCoord;
-})shader";
-
-	const char* fragmentShaderSource = R"shader(
-#version 330 core
-in vec2 texCoord;
-
-uniform sampler2D inTexture;
-
-out vec4 FragColor;
-
-void main()
-{
-    FragColor = texture(inTexture, texCoord);
-})shader";
-
+	std::string ReadFile(std::string_view path)
+	{
+		std::ifstream fileStream;
+		fileStream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+		fileStream.open(path);
+		std::stringstream stringStream;
+		stringStream << fileStream.rdbuf();
+		return stringStream.str();
+	}
 }
 
 // Not a permanent solution, but keeps more things out of the header file.
@@ -72,7 +47,7 @@ Game::Game() :
 	window(800, 600, "OpenGL Tutorial")
 {
 	gameData = std::unique_ptr<GameData>(new GameData{
-		Material(std::make_shared<Shader>(vertexShaderSource, fragmentShaderSource), std::make_shared<Texture>("resources/Ground_02.png")),
+		Material(std::make_shared<Shader>(ReadFile("resources/shaders/standardLit.vert"), ReadFile("resources/shaders/standard.frag")), std::make_shared<Texture>("resources/Ground_02.png")),
 		Mesh::MakeCube()
 		});
 
