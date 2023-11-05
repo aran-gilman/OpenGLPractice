@@ -54,37 +54,43 @@ Shader::~Shader()
 	glDeleteProgram(id);
 }
 
-void Shader::Use()
+void Shader::Use() const
 {
 	glUseProgram(id);
 }
 
 void Shader::Set(std::string_view name, bool value) const
 {
+	Use();
 	glUniform1i(glGetUniformLocation(id, name.data()), (int)value);
 }
 
 void Shader::Set(std::string_view name, int value) const
 {
+	Use();
 	glUniform1i(glGetUniformLocation(id, name.data()), value);
 }
 
 void Shader::Set(std::string_view name, float value) const
 {
+	Use();
 	glUniform1f(glGetUniformLocation(id, name.data()), value);
 }
 
 void Shader::Set(std::string_view name, float value0, float value1, float value2) const
 {
+	Use();
 	glUniform3f(glGetUniformLocation(id, name.data()), value0, value1, value2);
 }
 
 void Shader::Set(std::string_view name, float value0, float value1, float value2, float value3) const
 {
+	Use();
 	glUniform4f(glGetUniformLocation(id, name.data()), value0, value1, value2, value3);
 }
 
-void Shader::Set4(std::string_view name, const float* value)
+void Shader::SetMatrix4(std::string_view name, const float* value) const
 {
+	Use();
 	glUniformMatrix4fv(glGetUniformLocation(id, name.data()), 1, GL_FALSE, value);
 }

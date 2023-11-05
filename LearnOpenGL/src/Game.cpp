@@ -41,7 +41,8 @@ namespace {
 Game::Game() :
 	window(800, 600, "OpenGL Tutorial")
 {
-	std::shared_ptr<Shader> defaultShader = std::make_shared<Shader>(ReadFile("resources/shaders/standardLit.vert"), ReadFile("resources/shaders/standard.frag"));
+	std::shared_ptr<Shader> defaultShader = std::make_shared<Shader>(ReadFile("resources/shaders/standardUnlit.vert"), ReadFile("resources/shaders/standardUnlit.frag"));
+	defaultShader->Set("color", 1.0f, 1.0f, 1.0f, 1.0f);
 
 	std::shared_ptr<Material> cubeMaterial = std::make_shared<Material>(defaultShader, std::make_shared<Texture>("resources/Ground_02.png"));
 	std::shared_ptr<Material> lightSourceMaterial = std::make_shared<Material>(defaultShader, nullptr);

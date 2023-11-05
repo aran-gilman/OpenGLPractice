@@ -170,8 +170,8 @@
     <ClInclude Include="src\Component\Transform.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="resources\shaders\standard.frag" />
-    <None Include="resources\shaders\standardLit.vert" />
+    <None Include="resources\shaders\standardUnlit.frag" />
+    <None Include="resources\shaders\standardUnlit.vert" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

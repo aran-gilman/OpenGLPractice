@@ -91,7 +91,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="resources\shaders\standardLit.vert" />
-    <None Include="resources\shaders\standard.frag" />
+    <None Include="resources\shaders\standardUnlit.vert" />
+    <None Include="resources\shaders\standardUnlit.frag" />
   </ItemGroup>
 </Project>
