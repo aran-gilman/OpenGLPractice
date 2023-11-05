@@ -3,11 +3,15 @@
 
 #include <glm/glm.hpp>
 
-class Transform
+#include "Component.h"
+
+class Object;
+
+class Transform : public Component
 {
 public:
-	Transform() : Transform(glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f)) {}
-	Transform(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
+	Transform(Object* owner) : Transform(owner, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f)) {}
+	Transform(Object* owner, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale);
 
 	glm::vec3 GetPosition() const { return position; }
 	glm::vec3 GetRotation() const { return rotation; }

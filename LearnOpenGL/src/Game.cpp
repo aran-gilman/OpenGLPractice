@@ -15,6 +15,7 @@
 #include "Camera.h"
 #include "Material.h"
 #include "Mesh.h"
+#include "Object.h"
 #include "Shader.h"
 #include "Texture.h"
 #include "Transform.h"
@@ -65,8 +66,6 @@ struct GameData
 {
 	Material material;
 	Mesh mesh;
-
-	std::vector<Transform> meshTransforms;
 };
 
 Game::Game() :
@@ -74,14 +73,16 @@ Game::Game() :
 {
 	gameData = std::unique_ptr<GameData>(new GameData{
 		Material(std::make_shared<Shader>(vertexShaderSource, fragmentShaderSource), std::make_shared<Texture>("resources/Ground_02.png")),
-		Mesh::MakeCube(),
-		std::vector<Transform>(10)
+		Mesh::MakeCube()
 		});
 
-	for (Transform& transform : gameData->meshTransforms)
+	for (int i = 0; i < 10; i++)
 	{
+		objects.push_back(std::make_unique<Object>());
+
+		Object* object = objects.back().get();
 		glm::vec3 position = glm::sphericalRand(glm::linearRand(0.0f, 10.f));
-		transform.Set(
+		object->AddComponent<Transform>(
 			position,
 			glm::vec3(glm::linearRand(0.0f, 180.0f), glm::linearRand(0.0f, 180.0f), glm::linearRand(0.0f, 180.0f)),
 			glm::vec3(1.0f, 1.0f, 1.0f)
@@ -116,10 +117,14 @@ void Game::HandleUpdate(double elapsedTime)
 		onRender.Invoke(elapsedTime);
 
 		gameData->material.Use();
-		for (const Transform& transform : gameData->meshTransforms)
+		for (const auto& obj : objects)
 		{
-			gameData->material.GetShader()->Set4("transform", transform.GetMatrixPtr());
-			gameData->mesh.Draw();
+			Transform* transform = obj->GetComponent<Transform>();
+			if (transform != nullptr)
+			{
+				gameData->material.GetShader()->Set4("transform", transform->GetMatrixPtr());
+				gameData->mesh.Draw();
+			}
 		}
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}

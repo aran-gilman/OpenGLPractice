@@ -5,7 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/euler_angles.hpp>
 
-Transform::Transform(glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) : matrix(1.0f)
+Transform::Transform(Object* owner, glm::vec3 position, glm::vec3 rotation, glm::vec3 scale) : Component(owner), matrix(1.0f)
 {
 	Set(position, rotation, scale);
 }
