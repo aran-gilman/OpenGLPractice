@@ -1,4 +1,5 @@
 #version 330 core
+in vec3 normal;
 in vec2 texCoord;
 
 layout (std140) uniform AmbientLight
