@@ -1,5 +1,7 @@
 #include "Camera.h"
 
+#include <GL/glew.h>
+
 #include "Game.h"
 #include "Material.h"
 #include "Shader.h"
@@ -9,6 +11,17 @@ namespace
 	glm::mat4 CalculateViewMatrix(glm::vec3 position, glm::vec3 front, glm::vec3 up)
 	{
 		return glm::lookAt(position, position + front, up);
+	}
+
+	unsigned int CreateCameraUniformBuffer()
+	{
+		unsigned int uboId;
+		glGenBuffers(1, &uboId);
+		glBindBuffer(GL_UNIFORM_BUFFER, uboId);
+		glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
+		glBindBuffer(GL_UNIFORM_BUFFER, 0);
+		glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboId, 0, 2 * sizeof(glm::mat4));
+		return uboId;
 	}
 }
 
@@ -28,7 +41,9 @@ Camera::Camera(Game* game, glm::vec3 position, glm::vec3 front, float width, flo
 
 	mouseSensitivity(0.1f),
 	pitch(glm::degrees(std::asin(this->front.y))),
-	yaw(glm::degrees(std::asin(this->front.z / std::cos(glm::radians(pitch)))))
+	yaw(glm::degrees(std::asin(this->front.z / std::cos(glm::radians(pitch))))),
+
+	uboId(CreateCameraUniformBuffer())
 {
 	view = CalculateViewMatrix(position, front, up);
 
@@ -37,6 +52,19 @@ Camera::Camera(Game* game, glm::vec3 position, glm::vec3 front, float width, flo
 	game->GetWindow()->OnKeyInput().Register(std::bind_front(&Camera::HandleKeyInput, this));
 	game->GetWindow()->OnMousePosition().Register(std::bind_front(&Camera::HandleCursorMove, this));
 	game->GetWindow()->OnResize().Register(std::bind_front(&Camera::HandleResize, this));
+}
+
+void Camera::Use()
+{
+	glViewport(0, 0, width, height);
+
+	glBindBuffer(GL_UNIFORM_BUFFER, uboId);
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(view));
+
+	glBindBuffer(GL_UNIFORM_BUFFER, uboId);
+	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(projection));
+
+	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
 void Camera::HandleUpdate(double elapsedTime)
@@ -121,11 +149,4 @@ void Camera::HandleCursorMove(double xPos, double yPos, double xOffset, double y
 	front.y = std::sin(glm::radians(pitch));
 	front.z = std::sin(glm::radians(yaw)) * std::cos(glm::radians(pitch));
 	right = glm::normalize(glm::cross(front, up));
-}
-
-void Camera::Use(Material* material)
-{
-	glViewport(0, 0, width, height);
-	material->GetShader()->Set4("view", glm::value_ptr(view));
-	material->GetShader()->Set4("projection", glm::value_ptr(projection));
 }

@@ -28,12 +28,16 @@ layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aColor;
 layout (location = 2) in vec2 aTexCoord;
 
-out vec3 vertexColor;
-out vec2 texCoord;
+layout (std140) uniform Camera
+{
+    mat4 view;
+    mat4 projection;
+};
 
 uniform mat4 transform;
-uniform mat4 view;
-uniform mat4 projection;
+
+out vec3 vertexColor;
+out vec2 texCoord;
 
 void main()
 {
@@ -45,9 +49,9 @@ void main()
 #version 330 core
 in vec2 texCoord;
 
-out vec4 FragColor;
-
 uniform sampler2D inTexture;
+
+out vec4 FragColor;
 
 void main()
 {
@@ -108,10 +112,11 @@ void Game::HandleUpdate(double elapsedTime)
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	gameData->camera.Use();
+
 	onRender.Invoke(elapsedTime);
 
 	gameData->material.Use();
-	gameData->camera.Use(&gameData->material);
 	for (const Transform& transform : gameData->meshTransforms)
 	{
 		gameData->material.GetShader()->Set4("transform", transform.GetMatrixPtr());

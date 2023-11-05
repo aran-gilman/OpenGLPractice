@@ -19,7 +19,7 @@ class Camera
 public:
 	Camera(Game* game, glm::vec3 position, glm::vec3 front, float width, float height);
 
-	void Use(Material* material);
+	void Use();
 
 private:
 	glm::vec3 position;
@@ -39,11 +39,12 @@ private:
 	float pitch;
 	float yaw;
 
+	unsigned int uboId;
+
 	void HandleUpdate(double elapsedTime);
 	void HandleKeyInput(int keyToken, int scancode, int action, int mods);
 	void HandleResize(int width, int height);
 	void HandleCursorMove(double xPos, double yPos, double xOffset, double yOffset);
-
 };
 
 #endif

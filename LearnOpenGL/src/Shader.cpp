@@ -42,6 +42,9 @@ Shader::Shader(std::string_view vertexShaderCode, std::string_view fragmentShade
 		std::cerr << "Shader program linking failed! " << infoLog << std::endl;
 	}
 
+	unsigned int cameraUniformBlockId = glGetUniformBlockIndex(id, "Camera");
+	glUniformBlockBinding(id, cameraUniformBlockId, 0);
+
 	glDeleteShader(vertex);
 	glDeleteShader(fragment);
 }
