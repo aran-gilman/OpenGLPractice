@@ -3,11 +3,11 @@
 #include <functional>
 #include <stdexcept>
 
-#include "Game.h"
-#include "Material.h"
-#include "Mesh.h"
-#include "Object.h"
-#include "Shader.h"
+#include "../Game.h"
+#include "../Material.h"
+#include "../Mesh.h"
+#include "../Object.h"
+#include "../Shader.h"
 #include "Transform.h"
 
 MeshRenderer::MeshRenderer(Object* owner, std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material) :

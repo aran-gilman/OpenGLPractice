@@ -142,32 +142,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\MeshRenderer.cpp" />
+    <ClCompile Include="src\Component\MeshRenderer.cpp" />
     <ClCompile Include="src\Object.cpp" />
-    <ClCompile Include="src\Component.cpp" />
+    <ClCompile Include="src\Component\Component.cpp" />
     <ClCompile Include="src\Game.cpp" />
-    <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\Component\Camera.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\Window.cpp" />
-    <ClCompile Include="src\Transform.cpp" />
+    <ClCompile Include="src\Component\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\MeshRenderer.h" />
+    <ClInclude Include="src\Component\MeshRenderer.h" />
     <ClInclude Include="src\Object.h" />
-    <ClInclude Include="src\Component.h" />
+    <ClInclude Include="src\Component\Component.h" />
     <ClInclude Include="src\Event.h" />
     <ClInclude Include="src\Game.h" />
-    <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\Component\Camera.h" />
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Material.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\Window.h" />
-    <ClInclude Include="src\Transform.h" />
+    <ClInclude Include="src\Component\Transform.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\standard.frag" />

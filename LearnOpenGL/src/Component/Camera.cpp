@@ -5,10 +5,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Game.h"
-#include "Material.h"
-#include "Object.h"
-#include "Shader.h"
+#include "../Game.h"
+#include "../Material.h"
+#include "../Object.h"
+#include "../Shader.h"
 
 namespace
 {

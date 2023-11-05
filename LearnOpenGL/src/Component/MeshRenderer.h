@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "Component.h"
-#include "Event.h"
+#include "../Event.h"
 
 class Material;
 class Mesh;

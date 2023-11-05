@@ -4,7 +4,7 @@
 #include <memory>
 #include <vector>
 
-#include "Component.h"
+#include "Component/Component.h"
 
 class Game;
 

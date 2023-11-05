@@ -1,9 +1,5 @@
 #include "Component.h"
 
-#include <memory>
-
-#include "Object.h"
-
 Component::~Component()
 {
 }

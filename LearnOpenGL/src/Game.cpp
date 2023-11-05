@@ -16,14 +16,15 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Camera.h"
 #include "Material.h"
 #include "Mesh.h"
-#include "MeshRenderer.h"
 #include "Object.h"
 #include "Shader.h"
 #include "Texture.h"
-#include "Transform.h"
+
+#include "Component/Camera.h"
+#include "Component/MeshRenderer.h"
+#include "Component/Transform.h"
 
 namespace {
 	std::string ReadFile(std::string_view path)
