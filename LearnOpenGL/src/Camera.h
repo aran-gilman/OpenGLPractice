@@ -19,7 +19,8 @@ class Camera
 public:
 	Camera(Game* game, glm::vec3 position, glm::vec3 front, float width, float height);
 
-	void Use();
+	void Use() const;
+	void Clear() const;
 
 private:
 	glm::vec3 position;

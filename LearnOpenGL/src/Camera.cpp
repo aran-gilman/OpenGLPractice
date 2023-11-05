@@ -54,7 +54,7 @@ Camera::Camera(Game* game, glm::vec3 position, glm::vec3 front, float width, flo
 	game->GetWindow()->OnResize().Register(std::bind_front(&Camera::HandleResize, this));
 }
 
-void Camera::Use()
+void Camera::Use() const
 {
 	glViewport(0, 0, width, height);
 
@@ -65,6 +65,12 @@ void Camera::Use()
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(projection));
 
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
+}
+
+void Camera::Clear() const
+{
+	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 void Camera::HandleUpdate(double elapsedTime)

@@ -5,6 +5,7 @@
 
 #include "Window.h"
 
+class Camera;
 struct GameData;
 
 class Game
@@ -22,6 +23,10 @@ public:
 
 private:
 	Window window;
+
+	// TODO: This will eventually be raw pointers, with Camera components owned by objects within the scene.
+	std::vector<std::unique_ptr<Camera>> cameras;
+
 	std::unique_ptr<GameData> gameData;
 
 	Event<double> onUpdate;

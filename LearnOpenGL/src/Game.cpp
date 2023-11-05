@@ -65,7 +65,6 @@ struct GameData
 {
 	Material material;
 	Mesh mesh;
-	Camera camera;
 
 	std::vector<Transform> meshTransforms;
 };
@@ -76,7 +75,6 @@ Game::Game() :
 	gameData = std::unique_ptr<GameData>(new GameData{
 		Material(std::make_shared<Shader>(vertexShaderSource, fragmentShaderSource), std::make_shared<Texture>("resources/Ground_02.png")),
 		Mesh::MakeCube(),
-		Camera(this, glm::vec3(0.0f, -1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 800, 600),
 		std::vector<Transform>(10)
 		});
 
@@ -89,6 +87,8 @@ Game::Game() :
 			glm::vec3(1.0f, 1.0f, 1.0f)
 		);
 	}
+
+	cameras.push_back(std::make_unique<Camera>(this, glm::vec3(0.0f, -1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 800, 600));
 
 	window.SetCursorMode(Window::CursorMode::Locked);
 
@@ -109,20 +109,20 @@ void Game::HandleUpdate(double elapsedTime)
 {
 	onUpdate.Invoke(elapsedTime);
 
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	gameData->camera.Use();
-
-	onRender.Invoke(elapsedTime);
-
-	gameData->material.Use();
-	for (const Transform& transform : gameData->meshTransforms)
+	for (const auto& camera : cameras)
 	{
-		gameData->material.GetShader()->Set4("transform", transform.GetMatrixPtr());
-		gameData->mesh.Draw();
+		camera->Use();
+		camera->Clear();
+		onRender.Invoke(elapsedTime);
+
+		gameData->material.Use();
+		for (const Transform& transform : gameData->meshTransforms)
+		{
+			gameData->material.GetShader()->Set4("transform", transform.GetMatrixPtr());
+			gameData->mesh.Draw();
+		}
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
-	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Game::HandleKeyInput(int keyToken, int scancode, int action, int mods)
