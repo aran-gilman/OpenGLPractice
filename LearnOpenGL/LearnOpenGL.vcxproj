@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\MeshRenderer.cpp" />
     <ClCompile Include="src\Object.cpp" />
     <ClCompile Include="src\Component.cpp" />
     <ClCompile Include="src\Game.cpp" />
@@ -155,6 +156,7 @@
     <ClCompile Include="src\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\MeshRenderer.h" />
     <ClInclude Include="src\Object.h" />
     <ClInclude Include="src\Component.h" />
     <ClInclude Include="src\Event.h" />

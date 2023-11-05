@@ -1,6 +1,7 @@
 #ifndef MESH_H
 #define MESH_H
 
+#include <memory>
 #include <vector>
 
 #include <glm/glm.hpp>
@@ -15,7 +16,7 @@ struct Vertex
 class Mesh
 {
 public:
-	static Mesh MakeCube();
+	static std::unique_ptr<Mesh> MakeCube();
 
 	Mesh(const std::vector<Vertex>& vertices);
 	Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices);

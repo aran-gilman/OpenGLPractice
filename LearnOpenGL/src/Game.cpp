@@ -19,6 +19,7 @@
 #include "Camera.h"
 #include "Material.h"
 #include "Mesh.h"
+#include "MeshRenderer.h"
 #include "Object.h"
 #include "Shader.h"
 #include "Texture.h"
@@ -36,32 +37,27 @@ namespace {
 	}
 }
 
-// Not a permanent solution, but keeps more things out of the header file.
-struct GameData
-{
-	Material material;
-	Mesh mesh;
-};
-
 Game::Game() :
 	window(800, 600, "OpenGL Tutorial")
 {
-	gameData = std::unique_ptr<GameData>(new GameData{
-		Material(std::make_shared<Shader>(ReadFile("resources/shaders/standardLit.vert"), ReadFile("resources/shaders/standard.frag")), std::make_shared<Texture>("resources/Ground_02.png")),
-		Mesh::MakeCube()
-		});
-
-	for (int i = 0; i < 10; i++)
 	{
-		objects.push_back(std::make_unique<Object>(this));
+		std::shared_ptr<Material> cubeMaterial = std::make_shared<Material>(std::make_shared<Shader>(ReadFile("resources/shaders/standardLit.vert"), ReadFile("resources/shaders/standard.frag")), std::make_shared<Texture>("resources/Ground_02.png"));
+		std::shared_ptr<Mesh> cubeMesh(Mesh::MakeCube());
 
-		Object* object = objects.back().get();
-		glm::vec3 position = glm::sphericalRand(glm::linearRand(0.0f, 10.f));
-		object->AddComponent<Transform>(
-			position,
-			glm::vec3(glm::linearRand(0.0f, 180.0f), glm::linearRand(0.0f, 180.0f), glm::linearRand(0.0f, 180.0f)),
-			glm::vec3(1.0f, 1.0f, 1.0f)
-		);
+		for (int i = 0; i < 10; i++)
+		{
+			objects.push_back(std::make_unique<Object>(this));
+			Object* object = objects.back().get();
+
+			glm::vec3 position = glm::sphericalRand(glm::linearRand(0.0f, 10.f));
+			object->AddComponent<Transform>(
+				position,
+				glm::vec3(glm::linearRand(0.0f, 180.0f), glm::linearRand(0.0f, 180.0f), glm::linearRand(0.0f, 180.0f)),
+				glm::vec3(1.0f, 1.0f, 1.0f)
+			);
+
+			object->AddComponent<MeshRenderer>(cubeMesh, cubeMaterial);
+		}
 	}
 
 	{
@@ -104,17 +100,6 @@ void Game::HandleUpdate(double elapsedTime)
 		camera->Use();
 		camera->Clear();
 		onRender.Invoke(elapsedTime);
-
-		gameData->material.Use();
-		for (const auto& obj : objects)
-		{
-			Transform* transform = obj->GetComponent<Transform>();
-			if (transform != nullptr)
-			{
-				gameData->material.GetShader()->Set4("transform", transform->GetMatrixPtr());
-				gameData->mesh.Draw();
-			}
-		}
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }

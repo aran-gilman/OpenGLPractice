@@ -6,7 +6,6 @@
 #include "Window.h"
 
 class Camera;
-struct GameData;
 class Object;
 
 class Game
@@ -27,14 +26,11 @@ public:
 
 private:
 	Window window;
-	std::vector<Camera*> cameras;
-
-	std::vector<std::unique_ptr<Object>> objects;
-
-	std::unique_ptr<GameData> gameData;
-
 	Event<double> onUpdate;
 	Event<double> onRender;
+
+	std::vector<Camera*> cameras;
+	std::vector<std::unique_ptr<Object>> objects;
 
 	void HandleUpdate(double elapsedTime);
 	void HandleKeyInput(int keyToken, int scancode, int action, int mods);

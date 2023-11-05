@@ -3,7 +3,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-Mesh Mesh::MakeCube()
+std::unique_ptr<Mesh> Mesh::MakeCube()
 {
 	float v[] = {
 	-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -59,7 +59,7 @@ Mesh Mesh::MakeCube()
 			glm::vec2(v[i + 3], v[i + 4])
 		});
 	}
-	return Mesh(vertices);
+	return std::make_unique<Mesh>(vertices);
 }
 
 Mesh::Mesh(const std::vector<Vertex>& vertices) : Mesh(vertices, std::vector<unsigned int>())
