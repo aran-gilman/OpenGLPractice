@@ -93,5 +93,6 @@
   <ItemGroup>
     <None Include="resources\shaders\standardUnlit.vert" />
     <None Include="resources\shaders\standardUnlit.frag" />
+    <None Include="resources\shaders\texturelessUnlit.frag" />
   </ItemGroup>
 </Project>

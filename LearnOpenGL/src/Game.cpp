@@ -45,7 +45,10 @@ Game::Game() :
 	defaultShader->Set("color", 1.0f, 1.0f, 1.0f, 1.0f);
 
 	std::shared_ptr<Material> cubeMaterial = std::make_shared<Material>(defaultShader, std::make_shared<Texture>("resources/Ground_02.png"));
-	std::shared_ptr<Material> lightSourceMaterial = std::make_shared<Material>(defaultShader, nullptr);
+
+	std::shared_ptr<Shader> texturelessShader = std::make_shared<Shader>(ReadFile("resources/shaders/standardUnlit.vert"), ReadFile("resources/shaders/texturelessUnlit.frag"));
+	texturelessShader->Set("color", 1.0f, 1.0f, 0.9f, 1.0f);
+	std::shared_ptr<Material> lightSourceMaterial = std::make_shared<Material>(texturelessShader, nullptr);
 
 	std::shared_ptr<Mesh> cubeMesh(Mesh::MakeCube());
 
