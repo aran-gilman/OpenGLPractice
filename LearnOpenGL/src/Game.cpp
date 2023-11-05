@@ -41,31 +41,31 @@ namespace {
 Game::Game() :
 	window(800, 600, "OpenGL Tutorial")
 {
+	std::shared_ptr<Shader> defaultShader = std::make_shared<Shader>(ReadFile("resources/shaders/standardLit.vert"), ReadFile("resources/shaders/standard.frag"));
+
+	std::shared_ptr<Material> cubeMaterial = std::make_shared<Material>(defaultShader, std::make_shared<Texture>("resources/Ground_02.png"));
+	std::shared_ptr<Material> lightSourceMaterial = std::make_shared<Material>(defaultShader, nullptr);
+
+	std::shared_ptr<Mesh> cubeMesh(Mesh::MakeCube());
+
+	for (int i = 0; i < 10; i++)
 	{
-		std::shared_ptr<Material> cubeMaterial = std::make_shared<Material>(std::make_shared<Shader>(ReadFile("resources/shaders/standardLit.vert"), ReadFile("resources/shaders/standard.frag")), std::make_shared<Texture>("resources/Ground_02.png"));
-		std::shared_ptr<Mesh> cubeMesh(Mesh::MakeCube());
-
-		for (int i = 0; i < 10; i++)
-		{
-			objects.push_back(std::make_unique<Object>(this));
-			Object* object = objects.back().get();
-
-			glm::vec3 position = glm::sphericalRand(glm::linearRand(0.0f, 10.f));
-			object->AddComponent<Transform>(
-				position,
-				glm::vec3(glm::linearRand(0.0f, 180.0f), glm::linearRand(0.0f, 180.0f), glm::linearRand(0.0f, 180.0f)),
-				glm::vec3(1.0f, 1.0f, 1.0f)
-			);
-
-			object->AddComponent<MeshRenderer>(cubeMesh, cubeMaterial);
-		}
+		Object* object = CreateObject();
+		glm::vec3 position = glm::sphericalRand(glm::linearRand(0.0f, 10.f));
+		object->AddComponent<Transform>(
+			position,
+			glm::vec3(glm::linearRand(0.0f, 180.0f), glm::linearRand(0.0f, 180.0f), glm::linearRand(0.0f, 180.0f)),
+			glm::vec3(1.0f, 1.0f, 1.0f)
+		);
+		object->AddComponent<MeshRenderer>(cubeMesh, cubeMaterial);
 	}
 
-	{
-		objects.push_back(std::make_unique<Object>(this));
-		Object* cameraObject = objects.back().get();
-		cameraObject->AddComponent<Camera>(glm::vec3(0.0f, -1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 800, 600);
-	}
+	Object* lightSourceObject = CreateObject();
+	lightSourceObject->AddComponent<Transform>();
+	lightSourceObject->AddComponent<MeshRenderer>(cubeMesh, lightSourceMaterial);
+
+	Object* cameraObject = CreateObject();
+	cameraObject->AddComponent<Camera>(glm::vec3(0.0f, -1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 800, 600);
 
 	window.SetCursorMode(Window::CursorMode::Locked);
 
@@ -80,6 +80,12 @@ Game::~Game()
 void Game::Run()
 {
 	window.Run();
+}
+
+Object* Game::CreateObject()
+{
+	objects.push_back(std::make_unique<Object>(this));
+	return objects.back().get();
 }
 
 void Game::RegisterCamera(Camera* camera)

@@ -21,6 +21,8 @@ public:
 
 	void Run();
 
+	Object* CreateObject();
+
 	void RegisterCamera(Camera* camera);
 	void UnregisterCamera(Camera* camera);
 
