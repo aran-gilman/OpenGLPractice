@@ -22,11 +22,12 @@ public:
 
 	void Run();
 
+	void RegisterCamera(Camera* camera);
+	void UnregisterCamera(Camera* camera);
+
 private:
 	Window window;
-
-	// TODO: This will eventually be raw pointers, with Camera components owned by objects within the scene.
-	std::vector<std::unique_ptr<Camera>> cameras;
+	std::vector<Camera*> cameras;
 
 	std::vector<std::unique_ptr<Object>> objects;
 

@@ -8,6 +8,8 @@ class Component
 public:
 	virtual ~Component();
 
+	Object* GetOwner() { return owner; }
+
 	Component(const Component&) = delete;
 	Component& operator=(const Component&) = delete;
 

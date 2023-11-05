@@ -1,9 +1,13 @@
 #include "Camera.h"
 
 #include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "Game.h"
 #include "Material.h"
+#include "Object.h"
 #include "Shader.h"
 
 namespace
@@ -25,7 +29,9 @@ namespace
 	}
 }
 
-Camera::Camera(Game* game, glm::vec3 position, glm::vec3 front, float width, float height) :
+Camera::Camera(Object* owner, glm::vec3 position, glm::vec3 front, float width, float height) :
+	Component(owner),
+
 	position(position),
 	heading(glm::vec3(0.0f, 0.0f, 0.0f)),
 
@@ -47,11 +53,18 @@ Camera::Camera(Game* game, glm::vec3 position, glm::vec3 front, float width, flo
 {
 	view = CalculateViewMatrix(position, front, up);
 
-	game->OnUpdate().Register(std::bind_front(&Camera::HandleUpdate, this));
+	GetOwner()->GetGame()->RegisterCamera(this);
 
-	game->GetWindow()->OnKeyInput().Register(std::bind_front(&Camera::HandleKeyInput, this));
-	game->GetWindow()->OnMousePosition().Register(std::bind_front(&Camera::HandleCursorMove, this));
-	game->GetWindow()->OnResize().Register(std::bind_front(&Camera::HandleResize, this));
+	GetOwner()->GetGame()->OnUpdate().Register(std::bind_front(&Camera::HandleUpdate, this));
+
+	GetOwner()->GetGame()->GetWindow()->OnKeyInput().Register(std::bind_front(&Camera::HandleKeyInput, this));
+	GetOwner()->GetGame()->GetWindow()->OnMousePosition().Register(std::bind_front(&Camera::HandleCursorMove, this));
+	GetOwner()->GetGame()->GetWindow()->OnResize().Register(std::bind_front(&Camera::HandleResize, this));
+}
+
+Camera::~Camera()
+{
+	GetOwner()->GetGame()->UnregisterCamera(this);
 }
 
 void Camera::Use() const

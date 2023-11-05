@@ -1,23 +1,19 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
 #include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
-#include "Event.h"
-#include "Transform.h"
+#include "Component.h"
 
 class Game;
 class Material;
+class Object;
 
-class Camera
+class Camera : public Component
 {
 public:
-	Camera(Game* game, glm::vec3 position, glm::vec3 front, float width, float height);
+	Camera(Object* owner, glm::vec3 position, glm::vec3 front, float width, float height);
+	~Camera() override;
 
 	void Use() const;
 	void Clear() const;

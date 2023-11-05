@@ -53,7 +53,7 @@ Game::Game() :
 
 	for (int i = 0; i < 10; i++)
 	{
-		objects.push_back(std::make_unique<Object>());
+		objects.push_back(std::make_unique<Object>(this));
 
 		Object* object = objects.back().get();
 		glm::vec3 position = glm::sphericalRand(glm::linearRand(0.0f, 10.f));
@@ -64,7 +64,11 @@ Game::Game() :
 		);
 	}
 
-	cameras.push_back(std::make_unique<Camera>(this, glm::vec3(0.0f, -1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 800, 600));
+	{
+		objects.push_back(std::make_unique<Object>(this));
+		Object* cameraObject = objects.back().get();
+		cameraObject->AddComponent<Camera>(glm::vec3(0.0f, -1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 800, 600);
+	}
 
 	window.SetCursorMode(Window::CursorMode::Locked);
 
@@ -79,6 +83,16 @@ Game::~Game()
 void Game::Run()
 {
 	window.Run();
+}
+
+void Game::RegisterCamera(Camera* camera)
+{
+	cameras.push_back(camera);
+}
+
+void Game::UnregisterCamera(Camera* camera)
+{
+	std::erase(cameras, camera);
 }
 
 void Game::HandleUpdate(double elapsedTime)

@@ -6,10 +6,12 @@
 
 #include "Component.h"
 
+class Game;
+
 class Object
 {
 public:
-	Object() {}
+	Object(Game* game) : game(game) {}
 
 	template <class TComponent, class... Args>
 	void AddComponent(Args&&... args)
@@ -31,10 +33,13 @@ public:
 		return nullptr;
 	}
 
+	Game* GetGame() { return game; }
+
 	Object(const Object&) = delete;
 	Object& operator=(const Object&) = delete;
 
 private:
+	Game* game;
 	std::vector<std::unique_ptr<Component>> components;
 };
 
