@@ -44,3 +44,8 @@ void Texture::Use() const
 {
 	glBindTexture(GL_TEXTURE_2D, id);
 }
+
+void Texture::Reset() const
+{
+	glBindTexture(GL_TEXTURE_2D, 0);
+}

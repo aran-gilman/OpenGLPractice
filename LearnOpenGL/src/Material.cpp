@@ -16,6 +16,14 @@ void Material::Use() const
 	shader->Use();
 }
 
+void Material::Reset() const
+{
+	if (texture != nullptr)
+	{
+		texture->Reset();
+	}
+}
+
 Shader* Material::GetShader()
 {
 	return shader.get();

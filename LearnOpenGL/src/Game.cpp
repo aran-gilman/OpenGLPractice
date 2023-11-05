@@ -107,7 +107,6 @@ void Game::HandleUpdate(double elapsedTime)
 		camera->Use();
 		camera->Clear();
 		onRender.Invoke(elapsedTime);
-		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 }
 

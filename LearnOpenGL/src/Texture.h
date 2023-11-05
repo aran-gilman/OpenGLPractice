@@ -10,6 +10,7 @@ public:
 	~Texture();
 
 	void Use() const;
+	void Reset() const;
 
 private:
 	unsigned int id;

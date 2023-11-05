@@ -33,4 +33,5 @@ void MeshRenderer::HandleRender(double elapsedTime)
 	material->Use();
 	material->GetShader()->Set4("transform", transform->GetMatrixPtr());
 	mesh->Draw();
+	material->Reset();
 }

@@ -13,6 +13,8 @@ public:
 	Material(std::shared_ptr<Shader> shader, std::shared_ptr<Texture> texture);
 
 	void Use() const;
+	void Reset() const;
+
 	Shader* GetShader();
 
 private:

@@ -8,7 +8,9 @@ class Shader
 public:
 	Shader(std::string_view vertexShaderCode, std::string_view fragmentShaderCode);
 	~Shader();
+
 	void Use();
+
 	void Set(std::string_view name, bool value) const;
 	void Set(std::string_view name, int value) const;
 	void Set(std::string_view name, float value) const;
