@@ -49,7 +49,7 @@ Camera::Camera(Object* owner, glm::vec3 position, glm::vec3 front, float width, 
 	pitch(glm::degrees(std::asin(this->front.y))),
 	yaw(glm::degrees(std::asin(this->front.z / std::cos(glm::radians(pitch))))),
 
-	uboId(CreateCameraUniformBuffer())
+	uboID(CreateCameraUniformBuffer())
 {
 	view = CalculateViewMatrix(position, front, up);
 
@@ -65,16 +65,17 @@ Camera::Camera(Object* owner, glm::vec3 position, glm::vec3 front, float width, 
 Camera::~Camera()
 {
 	GetOwner()->GetGame()->UnregisterCamera(this);
+	glDeleteBuffers(1, &uboID);
 }
 
 void Camera::Use() const
 {
 	glViewport(0, 0, width, height);
 
-	glBindBuffer(GL_UNIFORM_BUFFER, uboId);
+	glBindBuffer(GL_UNIFORM_BUFFER, uboID);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(view));
 
-	glBindBuffer(GL_UNIFORM_BUFFER, uboId);
+	glBindBuffer(GL_UNIFORM_BUFFER, uboID);
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(projection));
 
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);

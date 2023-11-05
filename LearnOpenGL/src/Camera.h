@@ -36,7 +36,7 @@ private:
 	float pitch;
 	float yaw;
 
-	unsigned int uboId;
+	unsigned int uboID;
 
 	void HandleUpdate(double elapsedTime);
 	void HandleKeyInput(int keyToken, int scancode, int action, int mods);
