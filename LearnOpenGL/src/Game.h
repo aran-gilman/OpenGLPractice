@@ -5,6 +5,7 @@
 
 #include "Window.h"
 
+class AmbientLight;
 class Camera;
 class Object;
 
@@ -33,6 +34,9 @@ private:
 
 	std::vector<Camera*> cameras;
 	std::vector<std::unique_ptr<Object>> objects;
+
+	// TODO: Attach this to individual scenes.
+	std::unique_ptr<AmbientLight> ambientLight;
 
 	void HandleUpdate(double elapsedTime);
 	void HandleKeyInput(int keyToken, int scancode, int action, int mods);

@@ -16,6 +16,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "AmbientLight.h"
+#include "Color.h"
 #include "Material.h"
 #include "Mesh.h"
 #include "Object.h"
@@ -39,9 +41,10 @@ namespace {
 }
 
 Game::Game() :
-	window(800, 600, "OpenGL Tutorial")
+	window(800, 600, "OpenGL Tutorial"),
+	ambientLight(std::make_unique<AmbientLight>(0.2f, Color{1.0f, 1.0f, 1.0f}))
 {
-	std::shared_ptr<Shader> defaultShader = std::make_shared<Shader>(ReadFile("resources/shaders/standardUnlit.vert"), ReadFile("resources/shaders/standardUnlit.frag"));
+	std::shared_ptr<Shader> defaultShader = std::make_shared<Shader>(ReadFile("resources/shaders/standardUnlit.vert"), ReadFile("resources/shaders/standardLit.frag"));
 	defaultShader->Set("color", 1.0f, 1.0f, 1.0f, 1.0f);
 
 	std::shared_ptr<Material> cubeMaterial = std::make_shared<Material>(defaultShader, std::make_shared<Texture>("resources/Ground_02.png"));
@@ -71,10 +74,11 @@ Game::Game() :
 	Object* cameraObject = CreateObject();
 	cameraObject->AddComponent<Camera>(glm::vec3(0.0f, -1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 800, 600);
 
-	window.SetCursorMode(Window::CursorMode::Locked);
-
 	window.OnUpdate().Register(std::bind_front(&Game::HandleUpdate, this));
 	window.OnKeyInput().Register(std::bind_front(&Game::HandleKeyInput, this));
+
+	window.SetCursorMode(Window::CursorMode::Locked);
+	ambientLight->Use();
 }
 
 Game::~Game()

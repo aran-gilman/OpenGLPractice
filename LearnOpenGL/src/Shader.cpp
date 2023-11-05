@@ -45,6 +45,9 @@ Shader::Shader(std::string_view vertexShaderCode, std::string_view fragmentShade
 	unsigned int cameraUniformBlockId = glGetUniformBlockIndex(id, "Camera");
 	glUniformBlockBinding(id, cameraUniformBlockId, 0);
 
+	unsigned int ambientLightBlockId = glGetUniformBlockIndex(id, "AmbientLight");
+	glUniformBlockBinding(id, ambientLightBlockId, 1);
+
 	glDeleteShader(vertex);
 	glDeleteShader(fragment);
 }

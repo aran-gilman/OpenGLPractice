@@ -51,6 +51,9 @@
     <ClCompile Include="src\Component\MeshRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\AmbientLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Shader.h">
@@ -89,10 +92,17 @@
     <ClInclude Include="src\Component\MeshRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Color.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AmbientLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\standardUnlit.vert" />
     <None Include="resources\shaders\standardUnlit.frag" />
     <None Include="resources\shaders\texturelessUnlit.frag" />
+    <None Include="resources\shaders\standardLit.frag" />
   </ItemGroup>
 </Project>
