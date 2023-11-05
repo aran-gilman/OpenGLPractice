@@ -72,7 +72,7 @@ Game::Game() :
 	gameData = std::unique_ptr<GameData>(new GameData{
 		Material(std::make_shared<Shader>(vertexShaderSource, fragmentShaderSource), std::make_shared<Texture>("resources/Ground_02.png")),
 		Mesh::MakeCube(),
-		Camera(glm::vec3(0.0f, -1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 800, 600),
+		Camera(this, glm::vec3(0.0f, -1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 800, 600),
 		std::vector<Transform>(10)
 		});
 
@@ -88,12 +88,8 @@ Game::Game() :
 
 	window.SetCursorMode(Window::CursorMode::Locked);
 
-	window.OnUpdate().Register(std::bind_front(&Game::OnUpdate, this));
-	window.OnKeyInput().Register(std::bind_front(&Game::OnKeyInput, this));
-
-	window.OnKeyInput().Register(std::bind_front(&Camera::OnKeyInput, &(gameData->camera)));
-	window.OnMousePosition().Register(std::bind_front(&Camera::OnCursorMove, &(gameData->camera)));
-	window.OnResize().Register(std::bind_front(&Camera::OnResize, &(gameData->camera)));
+	window.OnUpdate().Register(std::bind_front(&Game::HandleUpdate, this));
+	window.OnKeyInput().Register(std::bind_front(&Game::HandleKeyInput, this));
 }
 
 Game::~Game()
@@ -105,12 +101,14 @@ void Game::Run()
 	window.Run();
 }
 
-void Game::OnUpdate(double elapsedTime)
+void Game::HandleUpdate(double elapsedTime)
 {
-	gameData->camera.OnUpdate(elapsedTime);
+	onUpdate.Invoke(elapsedTime);
 
 	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	onRender.Invoke(elapsedTime);
 
 	gameData->material.Use();
 	gameData->camera.Use(&gameData->material);
@@ -122,7 +120,7 @@ void Game::OnUpdate(double elapsedTime)
 	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-void Game::OnKeyInput(int keyToken, int scancode, int action, int mods)
+void Game::HandleKeyInput(int keyToken, int scancode, int action, int mods)
 {
 	if (action == GLFW_PRESS && keyToken == GLFW_KEY_ESCAPE)
 	{

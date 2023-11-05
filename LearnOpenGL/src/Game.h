@@ -13,14 +13,22 @@ public:
 	Game();
 	~Game();
 
+	Window* GetWindow() { return &window; }
+
+	Event<double>& OnUpdate() { return onUpdate; }
+	Event<double>& OnRender() { return onRender; }
+
 	void Run();
 
 private:
 	Window window;
 	std::unique_ptr<GameData> gameData;
 
-	void OnUpdate(double elapsedTime);
-	void OnKeyInput(int keyToken, int scancode, int action, int mods);
+	Event<double> onUpdate;
+	Event<double> onRender;
+
+	void HandleUpdate(double elapsedTime);
+	void HandleKeyInput(int keyToken, int scancode, int action, int mods);
 };
 
 #endif

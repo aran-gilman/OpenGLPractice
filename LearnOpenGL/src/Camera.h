@@ -11,17 +11,13 @@
 #include "Event.h"
 #include "Transform.h"
 
+class Game;
 class Material;
 
 class Camera
 {
 public:
-	Camera(glm::vec3 position, glm::vec3 front, float width, float height);
-
-	void OnUpdate(double elapsedTime);
-	void OnKeyInput(int keyToken, int scancode, int action, int mods);
-	void OnResize(int width, int height);
-	void OnCursorMove(double xPos, double yPos, double xOffset, double yOffset);
+	Camera(Game* game, glm::vec3 position, glm::vec3 front, float width, float height);
 
 	void Use(Material* material);
 
@@ -42,6 +38,12 @@ private:
 	float mouseSensitivity;
 	float pitch;
 	float yaw;
+
+	void HandleUpdate(double elapsedTime);
+	void HandleKeyInput(int keyToken, int scancode, int action, int mods);
+	void HandleResize(int width, int height);
+	void HandleCursorMove(double xPos, double yPos, double xOffset, double yOffset);
+
 };
 
 #endif

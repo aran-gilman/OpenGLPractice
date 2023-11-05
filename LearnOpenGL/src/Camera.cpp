@@ -1,5 +1,6 @@
 #include "Camera.h"
 
+#include "Game.h"
 #include "Material.h"
 #include "Shader.h"
 
@@ -11,7 +12,7 @@ namespace
 	}
 }
 
-Camera::Camera(glm::vec3 position, glm::vec3 front, float width, float height) :
+Camera::Camera(Game* game, glm::vec3 position, glm::vec3 front, float width, float height) :
 	position(position),
 	heading(glm::vec3(0.0f, 0.0f, 0.0f)),
 
@@ -30,9 +31,15 @@ Camera::Camera(glm::vec3 position, glm::vec3 front, float width, float height) :
 	yaw(glm::degrees(std::asin(this->front.z / std::cos(glm::radians(pitch)))))
 {
 	view = CalculateViewMatrix(position, front, up);
+
+	game->OnUpdate().Register(std::bind_front(&Camera::HandleUpdate, this));
+
+	game->GetWindow()->OnKeyInput().Register(std::bind_front(&Camera::HandleKeyInput, this));
+	game->GetWindow()->OnMousePosition().Register(std::bind_front(&Camera::HandleCursorMove, this));
+	game->GetWindow()->OnResize().Register(std::bind_front(&Camera::HandleResize, this));
 }
 
-void Camera::OnUpdate(double elapsedTime)
+void Camera::HandleUpdate(double elapsedTime)
 {
 	glm::vec3 rawMovement = heading.x * right - heading.z * front;
 	rawMovement.y = 0;
@@ -40,7 +47,7 @@ void Camera::OnUpdate(double elapsedTime)
 	view = CalculateViewMatrix(position, front, up);
 }
 
-void Camera::OnKeyInput(int keyToken, int scancode, int action, int mods)
+void Camera::HandleKeyInput(int keyToken, int scancode, int action, int mods)
 {
 	if (action == GLFW_PRESS)
 	{
@@ -89,14 +96,14 @@ void Camera::OnKeyInput(int keyToken, int scancode, int action, int mods)
 	}
 }
 
-void Camera::OnResize(int width, int height)
+void Camera::HandleResize(int width, int height)
 {
 	projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
 	this->width = width;
 	this->height = height;
 }
 
-void Camera::OnCursorMove(double xPos, double yPos, double xOffset, double yOffset)
+void Camera::HandleCursorMove(double xPos, double yPos, double xOffset, double yOffset)
 {
 	yaw += (xOffset * mouseSensitivity);
 	pitch += (-yOffset * mouseSensitivity);
