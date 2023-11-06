@@ -10,15 +10,12 @@ class AmbientLight : public Component
 {
 public:
 	AmbientLight(Object* owner, float strength, Color color);
-	~AmbientLight() override;
 
-	void Use();
+	void Use(unsigned int bufferID) const;
 
 private:
 	float strength;
 	Color color;
-
-	unsigned int uboID;
 };
 
 #endif

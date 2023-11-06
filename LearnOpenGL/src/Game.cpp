@@ -41,14 +41,24 @@ namespace {
 }
 
 Game::Game() :
-	window(800, 600, "OpenGL Tutorial")
+	window(800, 600, "OpenGL Tutorial"),
+	cameraBuffer("Camera", 0, 2 * sizeof(glm::mat4)),
+	ambientLightBuffer("AmbientLight", 1, 32)
 {
-	std::shared_ptr<Shader> defaultShader = std::make_shared<Shader>(ReadFile("resources/shaders/standardUnlit.vert"), ReadFile("resources/shaders/standardLit.frag"));
+	std::vector<ShaderBufferManager*> uniformBlocks{ &cameraBuffer, &ambientLightBuffer };
+
+	std::shared_ptr<Shader> defaultShader = std::make_shared<Shader>(
+		ReadFile("resources/shaders/standardUnlit.vert"),
+		ReadFile("resources/shaders/standardLit.frag"),
+		uniformBlocks);
 	defaultShader->Set("color", 1.0f, 1.0f, 1.0f, 1.0f);
 
 	std::shared_ptr<Material> cubeMaterial = std::make_shared<Material>(defaultShader, std::make_shared<Texture>("resources/Ground_02.png"));
 
-	std::shared_ptr<Shader> texturelessShader = std::make_shared<Shader>(ReadFile("resources/shaders/standardUnlit.vert"), ReadFile("resources/shaders/texturelessUnlit.frag"));
+	std::shared_ptr<Shader> texturelessShader = std::make_shared<Shader>(
+		ReadFile("resources/shaders/standardUnlit.vert"),
+		ReadFile("resources/shaders/texturelessUnlit.frag"),
+		uniformBlocks);
 	texturelessShader->Set("color", 1.0f, 1.0f, 0.9f, 1.0f);
 	std::shared_ptr<Material> lightSourceMaterial = std::make_shared<Material>(texturelessShader, nullptr);
 
@@ -74,7 +84,7 @@ Game::Game() :
 	cameraObject->AddComponent<Camera>(glm::vec3(0.0f, -1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 800, 600);
 
 	Object* scene = CreateObject();
-	scene->AddComponent<AmbientLight>(0.2f, Color{1.0f, 1.0f, 1.0f})->Use();
+	scene->AddComponent<AmbientLight>(0.2f, Color{1.0f, 1.0f, 1.0f})->Use(ambientLightBuffer.GetID());
 
 	window.OnUpdate().Register(std::bind_front(&Game::HandleUpdate, this));
 	window.OnKeyInput().Register(std::bind_front(&Game::HandleKeyInput, this));
@@ -113,7 +123,7 @@ void Game::HandleUpdate(double elapsedTime)
 
 	for (const auto& camera : cameras)
 	{
-		camera->Use();
+		camera->Use(cameraBuffer.GetID());
 		camera->Clear();
 		onRender.Invoke(elapsedTime);
 	}

@@ -15,7 +15,7 @@ public:
 	Camera(Object* owner, glm::vec3 position, glm::vec3 front, float width, float height);
 	~Camera() override;
 
-	void Use() const;
+	void Use(unsigned int bufferID) const;
 	void Clear() const;
 
 private:
@@ -35,8 +35,6 @@ private:
 	float mouseSensitivity;
 	float pitch;
 	float yaw;
-
-	unsigned int uboID;
 
 	void HandleUpdate(double elapsedTime);
 	void HandleKeyInput(int keyToken, int scancode, int action, int mods);

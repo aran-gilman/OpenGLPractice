@@ -3,6 +3,7 @@
 
 #include <vector>
 
+#include "ShaderBufferManager.h"
 #include "Window.h"
 
 class AmbientLight;
@@ -31,6 +32,9 @@ private:
 	Window window;
 	Event<double> onUpdate;
 	Event<double> onRender;
+
+	ShaderBufferManager cameraBuffer;
+	ShaderBufferManager ambientLightBuffer;
 
 	std::vector<Camera*> cameras;
 	std::vector<std::unique_ptr<Object>> objects;

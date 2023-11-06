@@ -150,6 +150,7 @@
     <ClCompile Include="src\Component\Camera.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Material.cpp" />
+    <ClCompile Include="src\ShaderBufferManager.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Shader.cpp" />
@@ -157,6 +158,7 @@
     <ClCompile Include="src\Component\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ShaderBufferManager.h" />
     <ClInclude Include="src\Component\AmbientLight.h" />
     <ClInclude Include="src\Color.h" />
     <ClInclude Include="src\Component\MeshRenderer.h" />

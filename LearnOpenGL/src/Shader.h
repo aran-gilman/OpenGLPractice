@@ -2,11 +2,14 @@
 #define SHADER_H
 
 #include <string_view>
+#include <vector>
+
+class ShaderBufferManager;
 
 class Shader
 {
 public:
-	Shader(std::string_view vertexShaderCode, std::string_view fragmentShaderCode);
+	Shader(std::string_view vertexShaderCode, std::string_view fragmentShaderCode, std::vector<ShaderBufferManager*> uniformBlocks);
 	~Shader();
 
 	void Use() const;

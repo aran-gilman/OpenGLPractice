@@ -4,36 +4,16 @@
 
 #include <GL/glew.h>
 
-namespace
-{
-	unsigned int CreateAmbientLightUniformBuffer()
-	{
-		unsigned int uboId = 0;
-		glGenBuffers(1, &uboId);
-		glBindBuffer(GL_UNIFORM_BUFFER, uboId);
-		glBufferData(GL_UNIFORM_BUFFER, 32, NULL, GL_STATIC_DRAW);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-		glBindBufferBase(GL_UNIFORM_BUFFER, 1, uboId);
-		return uboId;
-	}
-}
-
 AmbientLight::AmbientLight(Object* owner, float strength, Color color) :
 	Component(owner),
 	strength(strength),
-	color(color),
-	uboID(CreateAmbientLightUniformBuffer())
+	color(color)
 {
 }
 
-AmbientLight::~AmbientLight()
+void AmbientLight::Use(unsigned int bufferID) const
 {
-	glDeleteBuffers(1, &uboID);
-}
-
-void AmbientLight::Use()
-{
-	glBindBuffer(GL_UNIFORM_BUFFER, uboID);
+	glBindBuffer(GL_UNIFORM_BUFFER, bufferID);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(float), &strength);
 	glBufferSubData(GL_UNIFORM_BUFFER, 16, 3 * sizeof(float), &color);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);

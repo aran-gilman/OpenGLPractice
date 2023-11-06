@@ -4,7 +4,9 @@
 
 #include <GL/glew.h>
 
-Shader::Shader(std::string_view vertexShaderCode, std::string_view fragmentShaderCode)
+#include "ShaderBufferManager.h"
+
+Shader::Shader(std::string_view vertexShaderCode, std::string_view fragmentShaderCode, std::vector<ShaderBufferManager*>  uniformBlocks)
 {
 	int success;
 	char infoLog[512];
@@ -42,11 +44,11 @@ Shader::Shader(std::string_view vertexShaderCode, std::string_view fragmentShade
 		std::cerr << "Shader program linking failed! " << infoLog << std::endl;
 	}
 
-	unsigned int cameraUniformBlockId = glGetUniformBlockIndex(id, "Camera");
-	glUniformBlockBinding(id, cameraUniformBlockId, 0);
-
-	unsigned int ambientLightBlockId = glGetUniformBlockIndex(id, "AmbientLight");
-	glUniformBlockBinding(id, ambientLightBlockId, 1);
+	for (ShaderBufferManager* block : uniformBlocks)
+	{
+		unsigned int blockId = glGetUniformBlockIndex(id, block->GetName().data());
+		glUniformBlockBinding(id, blockId, block->GetBindingPoint());
+	}
 
 	glDeleteShader(vertex);
 	glDeleteShader(fragment);

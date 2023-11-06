@@ -16,17 +16,6 @@ namespace
 	{
 		return glm::lookAt(position, position + front, up);
 	}
-
-	unsigned int CreateCameraUniformBuffer()
-	{
-		unsigned int uboId;
-		glGenBuffers(1, &uboId);
-		glBindBuffer(GL_UNIFORM_BUFFER, uboId);
-		glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
-		glBindBuffer(GL_UNIFORM_BUFFER, 0);
-		glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboId, 0, 2 * sizeof(glm::mat4));
-		return uboId;
-	}
 }
 
 Camera::Camera(Object* owner, glm::vec3 position, glm::vec3 front, float width, float height) :
@@ -47,9 +36,7 @@ Camera::Camera(Object* owner, glm::vec3 position, glm::vec3 front, float width, 
 
 	mouseSensitivity(0.1f),
 	pitch(glm::degrees(std::asin(this->front.y))),
-	yaw(glm::degrees(std::asin(this->front.z / std::cos(glm::radians(pitch))))),
-
-	uboID(CreateCameraUniformBuffer())
+	yaw(glm::degrees(std::asin(this->front.z / std::cos(glm::radians(pitch)))))
 {
 	view = CalculateViewMatrix(position, front, up);
 
@@ -65,14 +52,13 @@ Camera::Camera(Object* owner, glm::vec3 position, glm::vec3 front, float width, 
 Camera::~Camera()
 {
 	GetOwner()->GetGame()->UnregisterCamera(this);
-	glDeleteBuffers(1, &uboID);
 }
 
-void Camera::Use() const
+void Camera::Use(unsigned int bufferID) const
 {
 	glViewport(0, 0, width, height);
 
-	glBindBuffer(GL_UNIFORM_BUFFER, uboID);
+	glBindBuffer(GL_UNIFORM_BUFFER, bufferID);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(view));
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(projection));
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
