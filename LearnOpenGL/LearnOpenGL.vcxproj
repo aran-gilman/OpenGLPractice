@@ -142,7 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\AmbientLight.cpp" />
+    <ClCompile Include="src\Component\AmbientLight.cpp" />
     <ClCompile Include="src\Component\MeshRenderer.cpp" />
     <ClCompile Include="src\Object.cpp" />
     <ClCompile Include="src\Component\Component.cpp" />
@@ -157,7 +157,7 @@
     <ClCompile Include="src\Component\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\AmbientLight.h" />
+    <ClInclude Include="src\Component\AmbientLight.h" />
     <ClInclude Include="src\Color.h" />
     <ClInclude Include="src\Component\MeshRenderer.h" />
     <ClInclude Include="src\Object.h" />

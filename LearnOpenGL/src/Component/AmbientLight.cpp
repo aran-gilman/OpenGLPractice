@@ -18,7 +18,8 @@ namespace
 	}
 }
 
-AmbientLight::AmbientLight(float strength, Color color) :
+AmbientLight::AmbientLight(Object* owner, float strength, Color color) :
+	Component(owner),
 	strength(strength),
 	color(color),
 	uboID(CreateAmbientLightUniformBuffer())
