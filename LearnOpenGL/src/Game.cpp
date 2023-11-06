@@ -74,9 +74,7 @@ Game::Game() :
 	cameraObject->AddComponent<Camera>(glm::vec3(0.0f, -1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 800, 600);
 
 	Object* scene = CreateObject();
-	Color ambientColor{ 1.0f, 1.0f, 1.0f };
-	scene->AddComponent<AmbientLight>(0.2f, ambientColor);
-	scene->GetComponent<AmbientLight>()->Use();
+	scene->AddComponent<AmbientLight>(0.2f, Color{1.0f, 1.0f, 1.0f})->Use();
 
 	window.OnUpdate().Register(std::bind_front(&Game::HandleUpdate, this));
 	window.OnKeyInput().Register(std::bind_front(&Game::HandleKeyInput, this));

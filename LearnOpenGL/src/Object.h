@@ -14,9 +14,10 @@ public:
 	Object(Game* game) : game(game) {}
 
 	template <class TComponent, class... Args>
-	void AddComponent(Args&&... args)
+	TComponent* AddComponent(Args&&... args)
 	{
 		components.push_back(std::make_unique<TComponent>(this, std::forward<Args>(args)...));
+		return static_cast<TComponent*>(components.back().get());
 	}
 
 	template <class TComponent>
