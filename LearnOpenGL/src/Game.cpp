@@ -43,7 +43,8 @@ namespace {
 Game::Game() :
 	window(800, 600, "OpenGL Tutorial"),
 	cameraBuffer("Camera", 0, 2 * sizeof(glm::mat4)),
-	ambientLightBuffer("AmbientLight", 1, 32)
+	ambientLightBuffer("AmbientLight", 1, 32),
+	directionalLightBuffer("DirectionalLight", 2, 48)
 {
 	std::vector<ShaderBufferManager*> uniformBlocks{ &cameraBuffer, &ambientLightBuffer };
 
