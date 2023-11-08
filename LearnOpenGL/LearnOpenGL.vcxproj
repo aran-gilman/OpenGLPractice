@@ -142,6 +142,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Component\DirectionalLight.cpp" />
     <ClCompile Include="src\Component\AmbientLight.cpp" />
     <ClCompile Include="src\Component\MeshRenderer.cpp" />
     <ClCompile Include="src\Object.cpp" />
@@ -158,6 +159,7 @@
     <ClCompile Include="src\Component\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Component\DirectionalLight.h" />
     <ClInclude Include="src\ShaderBufferManager.h" />
     <ClInclude Include="src\Component\AmbientLight.h" />
     <ClInclude Include="src\Color.h" />

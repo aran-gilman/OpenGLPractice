@@ -25,6 +25,7 @@
 
 #include "Component/AmbientLight.h"
 #include "Component/Camera.h"
+#include "Component/DirectionalLight.h"
 #include "Component/MeshRenderer.h"
 #include "Component/Transform.h"
 
@@ -86,6 +87,7 @@ Game::Game() :
 
 	Object* scene = CreateObject();
 	scene->AddComponent<AmbientLight>(0.2f, Color{1.0f, 1.0f, 1.0f})->Use(ambientLightBuffer.GetID());
+	scene->AddComponent<DirectionalLight>(1.0f, Color{ 1.0f, 1.0f, 1.0f }, glm::vec3(1.0f, 0.0f, 0.0f))->Use(directionalLightBuffer.GetID());
 
 	window.OnUpdate().Register(std::bind_front(&Game::HandleUpdate, this));
 	window.OnKeyInput().Register(std::bind_front(&Game::HandleKeyInput, this));
