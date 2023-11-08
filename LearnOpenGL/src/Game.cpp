@@ -27,6 +27,7 @@
 #include "Component/Camera.h"
 #include "Component/DirectionalLight.h"
 #include "Component/MeshRenderer.h"
+#include "Component/PointLight.h"
 #include "Component/Transform.h"
 
 namespace {
@@ -45,9 +46,10 @@ Game::Game() :
 	window(800, 600, "OpenGL Tutorial"),
 	cameraBuffer("Camera", 0, 2 * sizeof(glm::mat4)),
 	ambientLightBuffer("AmbientLight", 1, 32),
-	directionalLightBuffer("DirectionalLight", 2, 48)
+	directionalLightBuffer("DirectionalLight", 2, 48),
+	pointLightBuffer("PointLight", 3, 64)
 {
-	std::vector<ShaderBufferManager*> uniformBlocks{ &cameraBuffer, &ambientLightBuffer, &directionalLightBuffer };
+	std::vector<ShaderBufferManager*> uniformBlocks{ &cameraBuffer, &ambientLightBuffer, &directionalLightBuffer, &pointLightBuffer };
 
 	std::shared_ptr<Shader> defaultShader = std::make_shared<Shader>(
 		ReadFile("resources/shaders/standardUnlit.vert"),
@@ -61,7 +63,7 @@ Game::Game() :
 		ReadFile("resources/shaders/standardUnlit.vert"),
 		ReadFile("resources/shaders/texturelessUnlit.frag"),
 		uniformBlocks);
-	texturelessShader->Set("color", 1.0f, 1.0f, 0.9f, 1.0f);
+	texturelessShader->Set("color", 0.0f, 0.9f, 1.0f, 1.0f);
 	std::shared_ptr<Material> lightSourceMaterial = std::make_shared<Material>(texturelessShader, nullptr);
 
 	std::shared_ptr<Mesh> cubeMesh(Mesh::MakeCube());
@@ -79,8 +81,9 @@ Game::Game() :
 	}
 
 	Object* lightSourceObject = CreateObject();
-	lightSourceObject->AddComponent<Transform>();
+	lightSourceObject->AddComponent<Transform>(glm::vec3(5.0f, 1.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 	lightSourceObject->AddComponent<MeshRenderer>(cubeMesh, lightSourceMaterial);
+	lightSourceObject->AddComponent<PointLight>(0.5f, Color{ 0.0f, 0.9f, 1.0f }, 1.0f)->Use(pointLightBuffer.GetID());
 
 	Object* cameraObject = CreateObject();
 	cameraObject->AddComponent<Camera>(glm::vec3(0.0f, -1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 800, 600);

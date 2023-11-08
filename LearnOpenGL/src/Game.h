@@ -36,6 +36,7 @@ private:
 	ShaderBufferManager cameraBuffer;
 	ShaderBufferManager ambientLightBuffer;
 	ShaderBufferManager directionalLightBuffer;
+	ShaderBufferManager pointLightBuffer;
 
 	std::vector<Camera*> cameras;
 	std::vector<std::unique_ptr<Object>> objects;
