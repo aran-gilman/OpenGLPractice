@@ -61,6 +61,8 @@ void Camera::Use(unsigned int bufferID) const
 	glBindBuffer(GL_UNIFORM_BUFFER, bufferID);
 	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(view));
 	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(projection));
+	glm::vec4 pos = glm::vec4(position, 0.0f);
+	glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), sizeof(glm::vec4), glm::value_ptr(pos));
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
