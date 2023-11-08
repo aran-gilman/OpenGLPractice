@@ -18,7 +18,7 @@ public:
 private:
 	float strength;
 	Color color;
-	glm::vec3 inverseDirection;
+	glm::vec4 inverseDirection;
 };
 
 #endif

@@ -47,7 +47,7 @@ Game::Game() :
 	ambientLightBuffer("AmbientLight", 1, 32),
 	directionalLightBuffer("DirectionalLight", 2, 48)
 {
-	std::vector<ShaderBufferManager*> uniformBlocks{ &cameraBuffer, &ambientLightBuffer };
+	std::vector<ShaderBufferManager*> uniformBlocks{ &cameraBuffer, &ambientLightBuffer, &directionalLightBuffer };
 
 	std::shared_ptr<Shader> defaultShader = std::make_shared<Shader>(
 		ReadFile("resources/shaders/standardUnlit.vert"),
@@ -86,8 +86,8 @@ Game::Game() :
 	cameraObject->AddComponent<Camera>(glm::vec3(0.0f, -1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 800, 600);
 
 	Object* scene = CreateObject();
-	scene->AddComponent<AmbientLight>(0.2f, Color{1.0f, 1.0f, 1.0f})->Use(ambientLightBuffer.GetID());
-	scene->AddComponent<DirectionalLight>(1.0f, Color{ 1.0f, 1.0f, 1.0f }, glm::vec3(1.0f, 0.0f, 0.0f))->Use(directionalLightBuffer.GetID());
+	scene->AddComponent<AmbientLight>(0.2f, Color{1.0f, 1.0f, 1.0f, 1.0f })->Use(ambientLightBuffer.GetID());
+	scene->AddComponent<DirectionalLight>(1.0f, Color{ 0.0f, 1.0f, 1.0f, 1.0f }, glm::vec3(1.0f, 0.0f, 0.0f))->Use(directionalLightBuffer.GetID());
 
 	window.OnUpdate().Register(std::bind_front(&Game::HandleUpdate, this));
 	window.OnKeyInput().Register(std::bind_front(&Game::HandleKeyInput, this));
