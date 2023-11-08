@@ -15,6 +15,11 @@ const float* Transform::GetMatrixPtr() const
 	return glm::value_ptr(matrix);
 }
 
+const float* Transform::GetNormalMatrixPtr() const
+{
+	return glm::value_ptr(normalMatrix);
+}
+
 void Transform::Set(glm::vec3 newPosition, glm::vec3 newRotation, glm::vec3 newScale)
 {
 	position = newPosition;
@@ -27,6 +32,8 @@ void Transform::Set(glm::vec3 newPosition, glm::vec3 newRotation, glm::vec3 newS
 	matrix = glm::rotate(matrix, rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
 	matrix = glm::rotate(matrix, rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
 	matrix = glm::scale(matrix, scale);
+
+	normalMatrix = glm::mat3(glm::transpose(glm::inverse(matrix)));
 }
 
 void Transform::LookAt(glm::vec3 otherPosition)
@@ -38,6 +45,7 @@ void Transform::LookAt(glm::vec3 otherPosition)
 	rotation = glm::vec3(x, y, z);
 
 	matrix = glm::scale(matrix, scale);
+	normalMatrix = glm::mat3(glm::transpose(glm::inverse(matrix)));
 }
 
 void Transform::LookAt(glm::vec3 otherPosition, glm::vec3 newPosition)

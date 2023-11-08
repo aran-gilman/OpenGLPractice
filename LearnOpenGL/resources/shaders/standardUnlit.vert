@@ -10,6 +10,7 @@ layout (std140) uniform Camera
 };
 
 uniform mat4 transform;
+uniform mat3 normalMatrix;
 
 out vec3 vertexColor;
 out vec3 normal;
@@ -18,6 +19,6 @@ out vec2 texCoord;
 void main()
 {
     gl_Position = projection * view * transform * vec4(aPos, 1.0f);
-    normal = aNormal;
+    normal = normalMatrix * aNormal;
     texCoord = aTexCoord;
 }

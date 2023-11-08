@@ -20,6 +20,7 @@ public:
 	void Set(std::string_view name, float value0, float value1, float value2) const;
 	void Set(std::string_view name, float value0, float value1, float value2, float value3) const;
 
+	void SetMatrix3(std::string_view name, const float* value) const;
 	void SetMatrix4(std::string_view name, const float* value) const;
 
 private:

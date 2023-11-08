@@ -94,6 +94,12 @@ void Shader::Set(std::string_view name, float value0, float value1, float value2
 	glUniform4f(glGetUniformLocation(id, name.data()), value0, value1, value2, value3);
 }
 
+void Shader::SetMatrix3(std::string_view name, const float* value) const
+{
+	Use();
+	glUniformMatrix3fv(glGetUniformLocation(id, name.data()), 1, GL_FALSE, value);
+}
+
 void Shader::SetMatrix4(std::string_view name, const float* value) const
 {
 	Use();

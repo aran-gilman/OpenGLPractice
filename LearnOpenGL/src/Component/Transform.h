@@ -19,6 +19,7 @@ public:
 
 	glm::mat4 GetMatrix() const { return matrix; }
 	const float* GetMatrixPtr() const;
+	const float* GetNormalMatrixPtr() const;
 
 	void Set(glm::vec3 newPosition, glm::vec3 newRotation, glm::vec3 newScale);
 
@@ -37,6 +38,7 @@ private:
 	glm::vec3 scale;
 
 	glm::mat4 matrix;
+	glm::mat3 normalMatrix;
 };
 
 #endif
