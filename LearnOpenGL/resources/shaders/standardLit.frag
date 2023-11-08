@@ -3,7 +3,7 @@ in vec3 normal;
 in vec2 texCoord;
 in vec3 fragPos;
 
-layout (std140) uniform Camera
+layout (std140) uniform CameraBlock
 {
     mat4 view;
     mat4 projection;
