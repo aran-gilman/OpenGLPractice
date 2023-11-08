@@ -30,6 +30,8 @@
 #include "Component/PointLight.h"
 #include "Component/Transform.h"
 
+#include "ShaderInterface/CameraData.h"
+
 namespace {
 	std::string ReadFile(std::string_view path)
 	{
@@ -44,7 +46,7 @@ namespace {
 
 Game::Game() :
 	window(800, 600, "OpenGL Tutorial"),
-	cameraBuffer("CameraBlock", 0, 2 * sizeof(glm::mat4) + 16),
+	cameraBuffer("CameraBlock", 0, sizeof(CameraData)),
 	ambientLightBuffer("AmbientLight", 1, 32),
 	directionalLightBuffer("DirectionalLight", 2, 48),
 	pointLightBuffer("PointLight", 3, 64)

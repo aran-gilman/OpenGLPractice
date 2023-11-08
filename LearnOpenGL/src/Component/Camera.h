@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 
+#include "../ShaderInterface/CameraData.h"
 #include "Component.h"
 
 class Game;
@@ -19,15 +20,12 @@ public:
 	void Clear() const;
 
 private:
-	glm::vec3 position;
-	glm::vec3 heading;
+	CameraData shaderData;
 
+	glm::vec3 heading;
 	glm::vec3 front;
 	glm::vec3 up;
 	glm::vec3 right;
-
-	glm::mat4 view;
-	glm::mat4 projection;
 
 	int width;
 	int height;

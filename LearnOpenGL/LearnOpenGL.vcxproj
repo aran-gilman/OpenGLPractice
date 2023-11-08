@@ -160,6 +160,7 @@
     <ClCompile Include="src\Component\Transform.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ShaderInterface\CameraData.h" />
     <ClInclude Include="src\Component\PointLight.h" />
     <ClInclude Include="src\Component\DirectionalLight.h" />
     <ClInclude Include="src\ShaderBufferManager.h" />

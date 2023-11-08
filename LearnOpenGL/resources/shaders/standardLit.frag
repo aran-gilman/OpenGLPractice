@@ -3,11 +3,16 @@ in vec3 normal;
 in vec2 texCoord;
 in vec3 fragPos;
 
-layout (std140) uniform CameraBlock
+struct Camera
 {
     mat4 view;
     mat4 projection;
-    vec4 cameraPos;
+    vec3 position;
+};
+
+layout (std140) uniform CameraBlock
+{
+    Camera camera;
 };
 
 layout (std140) uniform AmbientLight
@@ -40,7 +45,7 @@ void main()
 {
     float specularStrength = 20.0f;
 
-    vec3 viewDir = normalize(cameraPos.xyz - fragPos);
+    vec3 viewDir = normalize(camera.position - fragPos);
 
     float directionalDot = max(dot(normal, inverseLightDirection.xyz), 0.0f);
     vec3 directional = directionalStrength * directionalDot * directionalColor.xyz;

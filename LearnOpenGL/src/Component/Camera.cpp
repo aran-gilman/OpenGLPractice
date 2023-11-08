@@ -20,16 +20,12 @@ namespace
 
 Camera::Camera(Object* owner, glm::vec3 position, glm::vec3 front, float width, float height) :
 	Component(owner),
+	shaderData { glm::mat4(1.0f), glm::perspective(glm::radians(45.0f), width / height, 0.1f, 100.0f), position },
 
-	position(position),
 	heading(glm::vec3(0.0f, 0.0f, 0.0f)),
-
 	front(glm::normalize(front)),
 	up(glm::vec3(0.0f, 1.0f, 0.0f)),
 	right(glm::normalize(glm::cross(this->front, this->up))),
-
-	view(glm::mat4(1.0f)),
-	projection(glm::perspective(glm::radians(45.0f), width / height, 0.1f, 100.0f)),
 
 	width(width),
 	height(height),
@@ -38,7 +34,7 @@ Camera::Camera(Object* owner, glm::vec3 position, glm::vec3 front, float width, 
 	pitch(glm::degrees(std::asin(this->front.y))),
 	yaw(glm::degrees(std::asin(this->front.z / std::cos(glm::radians(pitch)))))
 {
-	view = CalculateViewMatrix(position, front, up);
+	shaderData.view = CalculateViewMatrix(position, front, up);
 
 	GetOwner()->GetGame()->RegisterCamera(this);
 
@@ -59,10 +55,7 @@ void Camera::Use(unsigned int bufferID) const
 	glViewport(0, 0, width, height);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, bufferID);
-	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(view));
-	glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(projection));
-	glm::vec4 pos = glm::vec4(position, 0.0f);
-	glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), sizeof(glm::vec4), glm::value_ptr(pos));
+	glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(CameraData), &shaderData);
 	glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
@@ -76,8 +69,8 @@ void Camera::HandleUpdate(double elapsedTime)
 {
 	glm::vec3 rawMovement = heading.x * right - heading.z * front;
 	rawMovement.y = 0;
-	position += rawMovement * 3.5f * (float)elapsedTime;
-	view = CalculateViewMatrix(position, front, up);
+	shaderData.position += rawMovement * 3.5f * (float)elapsedTime;
+	shaderData.view = CalculateViewMatrix(shaderData.position, front, up);
 }
 
 void Camera::HandleKeyInput(int keyToken, int scancode, int action, int mods)
@@ -131,7 +124,7 @@ void Camera::HandleKeyInput(int keyToken, int scancode, int action, int mods)
 
 void Camera::HandleResize(int width, int height)
 {
-	projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
+	shaderData.projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
 	this->width = width;
 	this->height = height;
 }
