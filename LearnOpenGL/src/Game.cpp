@@ -81,9 +81,9 @@ Game::Game() :
 	}
 
 	Object* lightSourceObject = CreateObject();
-	lightSourceObject->AddComponent<Transform>(glm::vec3(5.0f, 1.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+	lightSourceObject->AddComponent<Transform>(glm::vec3(3.0f, 1.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 	lightSourceObject->AddComponent<MeshRenderer>(cubeMesh, lightSourceMaterial);
-	lightSourceObject->AddComponent<PointLight>(0.5f, Color{ 0.0f, 0.9f, 1.0f }, 1.0f)->Use(pointLightBuffer.GetID());
+	lightSourceObject->AddComponent<PointLight>(10.0f, Color{ 0.0f, 0.9f, 1.0f }, 5.0f)->Use(pointLightBuffer.GetID());
 
 	Object* cameraObject = CreateObject();
 	cameraObject->AddComponent<Camera>(glm::vec3(0.0f, -1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 800, 600);

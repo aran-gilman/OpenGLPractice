@@ -35,13 +35,12 @@ void main()
     vec3 directional = directionalStrength * directionalDot * directionalColor.xyz;
 
     vec3 pointDiff = lightPosition.xyz - fragPos;
-    vec3 pointDir = normalize(pointDiff);
-    float pointDot = max(dot(normal, pointDir), 0.0f);
-    vec3 point = pointStrength * pointDot * pointColor.xyz;
+    float pointDot = max(dot(normal, normalize(pointDiff)), 0.0f);
+    vec3 point = (pointStrength * pointDot * pointColor.xyz) / (1 + attenuation * length(pointDiff));
 
     vec3 ambient = ambientStrength * ambientColor.xyz;
 
-    vec4 light = vec4(ambient + directional + point, 1.0f);
+    vec4 light = vec4(clamp(ambient + directional + point, 0.0f, 1.0f), 1.0f);
 
     FragColor = light * color * texture(inTexture, texCoord);
 }
