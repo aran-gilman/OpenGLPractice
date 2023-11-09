@@ -23,12 +23,12 @@
 #include "Shader.h"
 #include "Texture.h"
 
-#include "Component/AmbientLight.h"
 #include "Component/Camera.h"
 #include "Component/DirectionalLight.h"
 #include "Component/MeshRenderer.h"
 #include "Component/PointLight.h"
 #include "Component/Transform.h"
+#include "Component/WorldSettings.h"
 
 #include "ShaderInterface/CameraData.h"
 
@@ -91,7 +91,7 @@ Game::Game() :
 	cameraObject->AddComponent<Camera>(glm::vec3(0.0f, -1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 800, 600);
 
 	Object* scene = CreateObject();
-	scene->AddComponent<AmbientLight>(Color{0.2f, 0.2f, 0.2f, 1.0f })->Use(worldBuffer.GetID());
+	scene->AddComponent<WorldSettings>(Color{0.2f, 0.2f, 0.2f, 1.0f })->Use(worldBuffer.GetID());
 	scene->AddComponent<DirectionalLight>(1.0f, Color{ 1.0f, 1.0f, 1.0f, 1.0f }, glm::vec3(1.0f, 0.0f, 0.0f))->Use(directionalLightBuffer.GetID());
 
 	window.OnUpdate().Register(std::bind_front(&Game::HandleUpdate, this));

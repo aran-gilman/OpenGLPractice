@@ -6,7 +6,7 @@
 #include "ShaderBufferManager.h"
 #include "Window.h"
 
-class AmbientLight;
+class WorldSettings;
 class Camera;
 class Object;
 
@@ -34,7 +34,7 @@ private:
 	Event<double> onRender;
 
 	ShaderBufferManager cameraBuffer;
-	ShaderBufferManager ambientLightBuffer;
+	ShaderBufferManager worldBuffer;
 	ShaderBufferManager directionalLightBuffer;
 	ShaderBufferManager pointLightBuffer;
 

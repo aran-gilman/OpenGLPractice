@@ -6,10 +6,10 @@
 
 class Object;
 
-class AmbientLight : public Component
+class WorldSettings : public Component
 {
 public:
-	AmbientLight(Object* owner, Color color);
+	WorldSettings(Object* owner, Color color);
 
 	void Use(unsigned int bufferID) const;
 

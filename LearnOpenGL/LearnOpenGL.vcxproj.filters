@@ -51,7 +51,7 @@
     <ClCompile Include="src\Component\MeshRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Component\AmbientLight.cpp">
+    <ClCompile Include="src\Component\WorldSettings.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ShaderBufferManager.cpp">
@@ -104,7 +104,7 @@
     <ClInclude Include="src\Color.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Component\AmbientLight.h">
+    <ClInclude Include="src\Component\WorldSettings.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ShaderBufferManager.h">
