@@ -31,6 +31,7 @@
 #include "Component/WorldSettings.h"
 
 #include "ShaderInterface/CameraData.h"
+#include "ShaderInterface/WorldSettingsData.h"
 
 namespace {
 	std::string ReadFile(std::string_view path)
@@ -47,7 +48,7 @@ namespace {
 Game::Game() :
 	window(800, 600, "OpenGL Tutorial"),
 	cameraBuffer("Camera", 0, CameraData::UniformBlockSize),
-	worldBuffer("World", 1, 16),
+	worldBuffer("World", 1, sizeof(WorldSettingsData)),
 	directionalLightBuffer("DirectionalLight", 2, 48),
 	pointLightBuffer("PointLight", 3, 64)
 {

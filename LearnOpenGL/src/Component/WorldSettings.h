@@ -2,6 +2,7 @@
 #define AMBIENT_LIGHT_H
 
 #include "../Color.h"
+#include "../ShaderInterface/WorldSettingsData.h"
 #include "Component.h"
 
 class Object;
@@ -14,7 +15,7 @@ public:
 	void Use(unsigned int bufferID) const;
 
 private:
-	Color color;
+	WorldSettingsData shaderData;
 };
 
 #endif

@@ -178,6 +178,7 @@
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\Window.h" />
     <ClInclude Include="src\Component\Transform.h" />
+    <ClInclude Include="src\ShaderInterface\WorldSettingsData.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\standardLit.frag" />
