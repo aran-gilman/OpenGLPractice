@@ -10,11 +10,10 @@ layout (std140) uniform Camera
     vec4 position;
 } camera;
 
-layout (std140) uniform AmbientLight
+layout (std140) uniform World
 {
-    float ambientStrength;
-    vec4 ambientColor;
-};
+    vec4 ambientLight;
+} world;
 
 layout (std140) uniform DirectionalLight
 {
@@ -60,9 +59,7 @@ void main()
 
     vec3 specular = directionalSpecular + pointSpecular;
 
-    vec3 ambient = ambientStrength * ambientColor.xyz;
-
-    vec4 light = vec4(ambient + directional + point + specular, 1.0f);
+    vec4 light = vec4(world.ambientLight.xyz + directional + point + specular, 1.0f);
     //vec4 light = vec4(specular, 1.0f);
 
     FragColor = light * color * texture(inTexture, texCoord);

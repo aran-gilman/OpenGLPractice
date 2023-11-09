@@ -47,11 +47,11 @@ namespace {
 Game::Game() :
 	window(800, 600, "OpenGL Tutorial"),
 	cameraBuffer("Camera", 0, CameraData::UniformBlockSize),
-	ambientLightBuffer("AmbientLight", 1, 32),
+	worldBuffer("World", 1, 16),
 	directionalLightBuffer("DirectionalLight", 2, 48),
 	pointLightBuffer("PointLight", 3, 64)
 {
-	std::vector<ShaderBufferManager*> uniformBlocks{ &cameraBuffer, &ambientLightBuffer, &directionalLightBuffer, &pointLightBuffer };
+	std::vector<ShaderBufferManager*> uniformBlocks{ &cameraBuffer, &worldBuffer, &directionalLightBuffer, &pointLightBuffer };
 
 	std::shared_ptr<Shader> defaultShader = std::make_shared<Shader>(
 		ReadFile("resources/shaders/standardUnlit.vert"),
@@ -91,7 +91,7 @@ Game::Game() :
 	cameraObject->AddComponent<Camera>(glm::vec3(0.0f, -1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 800, 600);
 
 	Object* scene = CreateObject();
-	scene->AddComponent<AmbientLight>(0.2f, Color{1.0f, 1.0f, 1.0f, 1.0f })->Use(ambientLightBuffer.GetID());
+	scene->AddComponent<AmbientLight>(Color{0.2f, 0.2f, 0.2f, 1.0f })->Use(worldBuffer.GetID());
 	scene->AddComponent<DirectionalLight>(1.0f, Color{ 1.0f, 1.0f, 1.0f, 1.0f }, glm::vec3(1.0f, 0.0f, 0.0f))->Use(directionalLightBuffer.GetID());
 
 	window.OnUpdate().Register(std::bind_front(&Game::HandleUpdate, this));

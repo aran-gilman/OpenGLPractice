@@ -9,12 +9,11 @@ class Object;
 class AmbientLight : public Component
 {
 public:
-	AmbientLight(Object* owner, float strength, Color color);
+	AmbientLight(Object* owner, Color color);
 
 	void Use(unsigned int bufferID) const;
 
 private:
-	float strength;
 	Color color;
 };
 
