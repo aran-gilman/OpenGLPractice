@@ -7,7 +7,7 @@ layout (std140) uniform Camera
 {
     mat4 view;
     mat4 projection;
-    vec3 position;
+    vec4 position;
 } camera;
 
 uniform mat4 transform;

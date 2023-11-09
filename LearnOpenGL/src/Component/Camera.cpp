@@ -20,7 +20,7 @@ namespace
 
 Camera::Camera(Object* owner, glm::vec3 position, glm::vec3 front, float width, float height) :
 	Component(owner),
-	shaderData { glm::mat4(1.0f), glm::perspective(glm::radians(45.0f), width / height, 0.1f, 100.0f), position },
+	shaderData { glm::mat4(1.0f), glm::perspective(glm::radians(45.0f), width / height, 0.1f, 100.0f), glm::vec4(position, 0.0f) },
 
 	heading(glm::vec3(0.0f, 0.0f, 0.0f)),
 	front(glm::normalize(front)),
@@ -67,10 +67,9 @@ void Camera::Clear() const
 
 void Camera::HandleUpdate(double elapsedTime)
 {
-	glm::vec3 rawMovement = heading.x * right - heading.z * front;
-	rawMovement.y = 0;
-	shaderData.position += rawMovement * 3.5f * (float)elapsedTime;
-	shaderData.view = CalculateViewMatrix(shaderData.position, front, up);
+	glm::vec3 diff = (heading.x * right - heading.z * front) * 3.5f * (float)elapsedTime;
+	shaderData.position += glm::vec4(diff.x, 0.0f, diff.z, 0.0f);
+	shaderData.view = CalculateViewMatrix(glm::vec3(shaderData.position), front, up);
 }
 
 void Camera::HandleKeyInput(int keyToken, int scancode, int action, int mods)

@@ -7,7 +7,7 @@ layout (std140) uniform Camera
 {
     mat4 view;
     mat4 projection;
-    vec3 position;
+    vec4 position;
 } camera;
 
 layout (std140) uniform AmbientLight
@@ -40,7 +40,7 @@ void main()
 {
     float specularStrength = 20.0f;
 
-    vec3 viewDir = normalize(camera.position - fragPos);
+    vec3 viewDir = normalize(camera.position.xyz - fragPos);
 
     float directionalDot = max(dot(normal, inverseLightDirection.xyz), 0.0f);
     vec3 directional = directionalStrength * directionalDot * directionalColor.xyz;

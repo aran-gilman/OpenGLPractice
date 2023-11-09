@@ -5,9 +5,11 @@
 
 struct CameraData
 {
+	static const int UniformBlockSize = 144;
+
 	glm::mat4 view;
 	glm::mat4 projection;
-	glm::vec3 position;
+	glm::vec4 position;
 };
 
 #endif
