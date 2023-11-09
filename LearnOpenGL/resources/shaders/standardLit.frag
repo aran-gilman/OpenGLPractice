@@ -3,17 +3,12 @@ in vec3 normal;
 in vec2 texCoord;
 in vec3 fragPos;
 
-struct Camera
+layout (std140) uniform Camera
 {
     mat4 view;
     mat4 projection;
     vec3 position;
-};
-
-layout (std140) uniform CameraBlock
-{
-    Camera camera;
-};
+} camera;
 
 layout (std140) uniform AmbientLight
 {

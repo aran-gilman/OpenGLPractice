@@ -46,7 +46,7 @@ namespace {
 
 Game::Game() :
 	window(800, 600, "OpenGL Tutorial"),
-	cameraBuffer("CameraBlock", 0, sizeof(CameraData)),
+	cameraBuffer("Camera", 0, sizeof(CameraData)),
 	ambientLightBuffer("AmbientLight", 1, 32),
 	directionalLightBuffer("DirectionalLight", 2, 48),
 	pointLightBuffer("PointLight", 3, 64)

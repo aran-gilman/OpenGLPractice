@@ -3,17 +3,12 @@ layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aTexCoord;
 
-struct Camera
+layout (std140) uniform Camera
 {
     mat4 view;
     mat4 projection;
     vec3 position;
-};
-
-layout (std140) uniform CameraBlock
-{
-    Camera camera;
-};
+} camera;
 
 uniform mat4 transform;
 uniform mat3 normalMatrix;
