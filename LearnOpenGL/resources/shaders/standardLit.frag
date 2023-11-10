@@ -30,8 +30,16 @@ layout (std140) uniform PointLight
     float attenuation;
 };
 
-uniform sampler2D inTexture;
-uniform vec4 color;
+struct Material
+{
+    sampler2D texture;
+
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+
+uniform Material material;
 
 out vec4 FragColor;
 
@@ -57,10 +65,11 @@ void main()
     float specMultPoint = pow(max(dot(viewDir, reflectPoint), 0.0f), 32) * specularStrength;
     vec3 pointSpecular = (specMultPoint * pointColor.xyz)  / (1 + attenuation * length(pointDiff));
 
-    vec3 specular = directionalSpecular + pointSpecular;
+    vec3 specularLight = directionalSpecular + pointSpecular;
 
-    vec4 light = vec4(world.ambientLight.xyz + directional + point + specular, 1.0f);
-    //vec4 light = vec4(specular, 1.0f);
+    vec3 ambient = material.ambient * world.ambientLight.xyz;
+    vec3 diffuse = material.diffuse * directional + point;
+    vec3 specular = material.specular * directionalSpecular + pointSpecular;
 
-    FragColor = light * color * texture(inTexture, texCoord);
+    FragColor = vec4(ambient + diffuse + specular, 1.0f) * texture(material.texture, texCoord);
 }
