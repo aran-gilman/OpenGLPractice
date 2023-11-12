@@ -60,7 +60,7 @@ Game::Game() :
 		uniformBlocks);
 	defaultShader->Set("material.ambient", 1.0f, 1.0f, 1.0f);
 	defaultShader->Set("material.diffuse", 1.0f, 1.0f, 1.0f);
-	defaultShader->Set("material.specular", 1.0f, 1.0f, 1.0f);
+	defaultShader->Set("material.specular", 0.5f, 0.5f, 0.5f);
 
 	std::shared_ptr<Material> cubeMaterial = std::make_shared<Material>(defaultShader, std::make_shared<Texture>("resources/Ground_02.png"));
 
@@ -88,14 +88,14 @@ Game::Game() :
 	Object* lightSourceObject = CreateObject();
 	lightSourceObject->AddComponent<Transform>(glm::vec3(3.0f, 1.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 	lightSourceObject->AddComponent<MeshRenderer>(cubeMesh, lightSourceMaterial);
-	lightSourceObject->AddComponent<PointLight>(10.0f, glm::vec3(0.0f, 0.9f, 1.0f), 5.0f)->Use(lightBuffer.GetID());
+	lightSourceObject->AddComponent<PointLight>(2.0f, glm::vec3(0.0f, 0.9f, 1.0f), 1.0f)->Use(lightBuffer.GetID());
 
 	Object* cameraObject = CreateObject();
 	cameraObject->AddComponent<Camera>(glm::vec3(0.0f, -1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 800, 600);
 
 	Object* scene = CreateObject();
 	scene->AddComponent<WorldSettings>(Color{0.2f, 0.2f, 0.2f, 1.0f })->Use(worldBuffer.GetID());
-	scene->AddComponent<DirectionalLight>(1.0f, glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 0.0f, 0.0f))->Use(lightBuffer.GetID());
+	scene->AddComponent<DirectionalLight>(0.5f, glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 0.0f, 0.0f))->Use(lightBuffer.GetID());
 
 	window.OnUpdate().Register(std::bind_front(&Game::HandleUpdate, this));
 	window.OnKeyInput().Register(std::bind_front(&Game::HandleKeyInput, this));
