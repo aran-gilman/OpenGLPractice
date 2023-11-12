@@ -44,19 +44,26 @@ uniform MaterialProperties material;
 
 out vec4 FragColor;
 
+vec3 CalculateLight(in LightProperties light)
+{
+    vec3 direction = light.position.w > 0.0f ? -light.position.xyz : normalize(light.position.xyz - fs_in.fragPos);
+    float dot = max(dot(fs_in.normal, direction), 0.0f);
+    vec3 color = dot * light.color.w * light.color.xyz;
+    if (light.attenuation > 0.0f)
+    {
+        color = color / (1 + light.attenuation * length(light.position.xyz - fs_in.fragPos));
+    }
+    return color;
+}
+
 void main()
 {
     float specularStrength = 20.0f;
 
     vec3 viewDir = normalize(camera.position.xyz - fs_in.fragPos);
 
-    float directionalDot = max(dot(fs_in.normal, -directional.position.xyz), 0.0f);
-    vec3 directional = directional.color.w * directionalDot * directional.color.xyz;
-
-    vec3 pointDiff = point.position.xyz - fs_in.fragPos;
-    vec3 pointDir = normalize(pointDiff);
-    float pointDot = max(dot(fs_in.normal, pointDir), 0.0f);
-    vec3 point = (point.color.w * pointDot * point.color.xyz) / (1 + point.attenuation * length(pointDiff));
+    vec3 directional = CalculateLight(directional);
+    vec3 point = CalculateLight(point);
 
     //vec3 reflectDirectional = reflect(directional.position.xyz, fs_in.normal);
     //float specMultDirectional = pow(max(dot(viewDir, reflectDirectional), 0.0f), 32) * specularStrength;
