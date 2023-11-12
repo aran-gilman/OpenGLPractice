@@ -58,7 +58,9 @@ Game::Game() :
 		ReadFile("resources/shaders/standardUnlit.vert"),
 		ReadFile("resources/shaders/standardLit.frag"),
 		uniformBlocks);
-	defaultShader->Set("color", 1.0f, 1.0f, 1.0f, 1.0f);
+	defaultShader->Set("material.ambient", 1.0f, 0.5f, 0.31f);
+	defaultShader->Set("material.diffuse", 1.0f, 0.5f, 0.31f);
+	defaultShader->Set("material.specular", 0.5f, 0.5f, 0.5f);
 
 	std::shared_ptr<Material> cubeMaterial = std::make_shared<Material>(defaultShader, std::make_shared<Texture>("resources/Ground_02.png"));
 

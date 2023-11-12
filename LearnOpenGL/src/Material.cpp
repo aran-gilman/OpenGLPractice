@@ -14,9 +14,6 @@ void Material::Use() const
 		texture->Use();
 	}
 	shader->Use();
-	shader->Set("material.ambient", 1.0f, 0.5f, 0.31f);
-	shader->Set("material.diffuse", 1.0f, 0.5f, 0.31f);
-	shader->Set("material.specular", 0.5f, 0.5f, 0.5f);
 }
 
 void Material::Reset() const
