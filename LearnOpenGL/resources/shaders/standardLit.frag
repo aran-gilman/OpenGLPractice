@@ -1,7 +1,10 @@
 #version 330 core
-in vec3 normal;
-in vec2 texCoord;
-in vec3 fragPos;
+in VS_OUT
+{
+    vec3 normal;
+    vec2 texCoord;
+    vec3 fragPos;
+} fs_in;
 
 layout (std140) uniform Camera
 {
@@ -45,21 +48,21 @@ void main()
 {
     float specularStrength = 20.0f;
 
-    vec3 viewDir = normalize(camera.position.xyz - fragPos);
+    vec3 viewDir = normalize(camera.position.xyz - fs_in.fragPos);
 
-    float directionalDot = max(dot(normal, -directional.position.xyz), 0.0f);
+    float directionalDot = max(dot(fs_in.normal, -directional.position.xyz), 0.0f);
     vec3 directional = directional.color.w * directionalDot * directional.color.xyz;
 
-    vec3 pointDiff = point.position.xyz - fragPos;
+    vec3 pointDiff = point.position.xyz - fs_in.fragPos;
     vec3 pointDir = normalize(pointDiff);
-    float pointDot = max(dot(normal, pointDir), 0.0f);
+    float pointDot = max(dot(fs_in.normal, pointDir), 0.0f);
     vec3 point = (point.color.w * pointDot * point.color.xyz) / (1 + point.attenuation * length(pointDiff));
 
-    //vec3 reflectDirectional = reflect(directional.position.xyz, normal);
+    //vec3 reflectDirectional = reflect(directional.position.xyz, fs_in.normal);
     //float specMultDirectional = pow(max(dot(viewDir, reflectDirectional), 0.0f), 32) * specularStrength;
     //vec3 directionalSpecular = specMultDirectional * directional.color.xyz;
 
-    //vec3 reflectPoint = reflect(-pointDir, normal);
+    //vec3 reflectPoint = reflect(-pointDir, fs_in.normal);
     //float specMultPoint = pow(max(dot(viewDir, reflectPoint), 0.0f), 32) * specularStrength;
     //vec3 pointSpecular = (specMultPoint * point.color.xyz)  / (1 + point.attenuation * length(pointDiff));
 
@@ -69,5 +72,5 @@ void main()
     vec3 diffuse = material.diffuse * directional + point;
     vec3 specular = vec3(0.0f); //material.specular * directionalSpecular + pointSpecular;
 
-    FragColor = vec4(ambient + diffuse + specular, 1.0f) * texture(material.texture, texCoord);
+    FragColor = vec4(ambient + diffuse + specular, 1.0f) * texture(material.texture, fs_in.texCoord);
 }
