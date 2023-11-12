@@ -21,7 +21,10 @@ layout (std140) uniform World
 struct LightProperties
 {
     vec4 position;
-    vec4 color;
+
+    vec4 diffuse;
+    vec4 specular;
+
     float attenuation;
 };
 
@@ -53,7 +56,7 @@ vec3 CalculateDiffuse(in LightProperties light)
 {
     vec3 direction = light.position.w > 0.0f ? -light.position.xyz : normalize(light.position.xyz - fs_in.fragPos);
     float dot = max(dot(fs_in.normal, direction), 0.0f);
-    vec3 color = dot * light.color.w * light.color.xyz;
+    vec3 color = dot * light.diffuse.w * light.diffuse.xyz;
     float attenuation = CalculateAttenuation(light);
     return color / attenuation;
 }
@@ -62,8 +65,8 @@ vec3 CalculateSpecular(in LightProperties light, in vec3 viewDir)
 {
     vec3 direction = light.position.w > 0.0f ? light.position.xyz : -normalize(light.position.xyz - fs_in.fragPos);
     vec3 reflectDir = reflect(direction, fs_in.normal);
-    float multiplier = pow(max(dot(viewDir, reflectDir), 0.0f), 32) * 20;
-    vec3 color = multiplier * light.color.xyz;
+    float multiplier = pow(max(dot(viewDir, reflectDir), 0.0f), 32);
+    vec3 color = multiplier * light.specular.w * light.specular.xyz;
     float attenuation = CalculateAttenuation(light);
     return color / attenuation;;
 }
