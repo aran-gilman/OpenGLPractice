@@ -122,6 +122,9 @@
     <ClInclude Include="src\ShaderInterface\WorldSettingsData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\ShaderInterface\LightData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="resources\shaders\standardUnlit.vert" />

@@ -4,6 +4,8 @@
 #include <glm/glm.hpp>
 
 #include "../Color.h"
+#include "../ShaderInterface/LightData.h"
+
 #include "Component.h"
 
 class Transform;
@@ -12,16 +14,13 @@ class Object;
 class PointLight : public Component
 {
 public:
-	PointLight(Object* owner, float strength, Color color, float attenuation);
+	PointLight(Object* owner, float strength, glm::vec3 color, float attenuation);
 
 	void Use(unsigned int bufferID);
 
 private:
-	float strength;
-	Color color;
-	float attenuation;
-
 	Transform* transform;
+	LightData shaderData;
 };
 
 #endif

@@ -15,22 +15,20 @@ layout (std140) uniform World
     vec4 ambientLight;
 } world;
 
-layout (std140) uniform DirectionalLight
+struct LightProperties
 {
-    float directionalStrength;
-    vec4 directionalColor;
-    vec4 inverseLightDirection;
-};
-
-layout (std140) uniform PointLight
-{
-    float pointStrength;
-    vec4 pointColor;
-    vec4 lightPosition;
+    vec4 position;
+    vec4 color;
     float attenuation;
 };
 
-struct Material
+layout (std140) uniform Light
+{
+    LightProperties directional;
+    LightProperties point;
+};
+
+struct MaterialProperties
 {
     sampler2D texture;
 
@@ -39,7 +37,7 @@ struct Material
     vec3 specular;
 };
 
-uniform Material material;
+uniform MaterialProperties material;
 
 out vec4 FragColor;
 
@@ -49,27 +47,27 @@ void main()
 
     vec3 viewDir = normalize(camera.position.xyz - fragPos);
 
-    float directionalDot = max(dot(normal, inverseLightDirection.xyz), 0.0f);
-    vec3 directional = directionalStrength * directionalDot * directionalColor.xyz;
+    float directionalDot = max(dot(normal, -directional.position.xyz), 0.0f);
+    vec3 directional = directional.color.w * directionalDot * directional.color.xyz;
 
-    vec3 pointDiff = lightPosition.xyz - fragPos;
+    vec3 pointDiff = point.position.xyz - fragPos;
     vec3 pointDir = normalize(pointDiff);
     float pointDot = max(dot(normal, pointDir), 0.0f);
-    vec3 point = (pointStrength * pointDot * pointColor.xyz) / (1 + attenuation * length(pointDiff));
+    vec3 point = (point.color.w * pointDot * point.color.xyz) / (1 + point.attenuation * length(pointDiff));
 
-    vec3 reflectDirectional = reflect(-inverseLightDirection.xyz, normal);
-    float specMultDirectional = pow(max(dot(viewDir, reflectDirectional), 0.0f), 32) * specularStrength;
-    vec3 directionalSpecular = specMultDirectional * directionalColor.xyz;
+    //vec3 reflectDirectional = reflect(directional.position.xyz, normal);
+    //float specMultDirectional = pow(max(dot(viewDir, reflectDirectional), 0.0f), 32) * specularStrength;
+    //vec3 directionalSpecular = specMultDirectional * directional.color.xyz;
 
-    vec3 reflectPoint = reflect(-pointDir, normal);
-    float specMultPoint = pow(max(dot(viewDir, reflectPoint), 0.0f), 32) * specularStrength;
-    vec3 pointSpecular = (specMultPoint * pointColor.xyz)  / (1 + attenuation * length(pointDiff));
+    //vec3 reflectPoint = reflect(-pointDir, normal);
+    //float specMultPoint = pow(max(dot(viewDir, reflectPoint), 0.0f), 32) * specularStrength;
+    //vec3 pointSpecular = (specMultPoint * point.color.xyz)  / (1 + point.attenuation * length(pointDiff));
 
-    vec3 specularLight = directionalSpecular + pointSpecular;
+    //vec3 specularLight = directionalSpecular + pointSpecular;
 
     vec3 ambient = material.ambient * world.ambientLight.xyz;
     vec3 diffuse = material.diffuse * directional + point;
-    vec3 specular = material.specular * directionalSpecular + pointSpecular;
+    vec3 specular = vec3(0.0f); //material.specular * directionalSpecular + pointSpecular;
 
     FragColor = vec4(ambient + diffuse + specular, 1.0f) * texture(material.texture, texCoord);
 }

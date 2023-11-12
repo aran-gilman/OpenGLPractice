@@ -31,6 +31,7 @@
 #include "Component/WorldSettings.h"
 
 #include "ShaderInterface/CameraData.h"
+#include "ShaderInterface/LightData.h"
 #include "ShaderInterface/WorldSettingsData.h"
 
 namespace {
@@ -49,10 +50,9 @@ Game::Game() :
 	window(800, 600, "OpenGL Tutorial"),
 	cameraBuffer("Camera", 0, CameraData::UniformBlockSize),
 	worldBuffer("World", 1, sizeof(WorldSettingsData)),
-	directionalLightBuffer("DirectionalLight", 2, 48),
-	pointLightBuffer("PointLight", 3, 64)
+	lightBuffer("Light", 2, 2 * LightData::UniformBlockSize)
 {
-	std::vector<ShaderBufferManager*> uniformBlocks{ &cameraBuffer, &worldBuffer, &directionalLightBuffer, &pointLightBuffer };
+	std::vector<ShaderBufferManager*> uniformBlocks{ &cameraBuffer, &worldBuffer, &lightBuffer };
 
 	std::shared_ptr<Shader> defaultShader = std::make_shared<Shader>(
 		ReadFile("resources/shaders/standardUnlit.vert"),
@@ -88,14 +88,14 @@ Game::Game() :
 	Object* lightSourceObject = CreateObject();
 	lightSourceObject->AddComponent<Transform>(glm::vec3(3.0f, 1.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 1.0f, 1.0f));
 	lightSourceObject->AddComponent<MeshRenderer>(cubeMesh, lightSourceMaterial);
-	lightSourceObject->AddComponent<PointLight>(10.0f, Color{ 0.0f, 0.9f, 1.0f }, 5.0f)->Use(pointLightBuffer.GetID());
+	lightSourceObject->AddComponent<PointLight>(10.0f, glm::vec3(0.0f, 0.9f, 1.0f), 5.0f)->Use(lightBuffer.GetID());
 
 	Object* cameraObject = CreateObject();
 	cameraObject->AddComponent<Camera>(glm::vec3(0.0f, -1.0f, 10.0f), glm::vec3(0.0f, 0.0f, -1.0f), 800, 600);
 
 	Object* scene = CreateObject();
 	scene->AddComponent<WorldSettings>(Color{0.2f, 0.2f, 0.2f, 1.0f })->Use(worldBuffer.GetID());
-	scene->AddComponent<DirectionalLight>(1.0f, Color{ 1.0f, 1.0f, 1.0f, 1.0f }, glm::vec3(1.0f, 0.0f, 0.0f))->Use(directionalLightBuffer.GetID());
+	scene->AddComponent<DirectionalLight>(1.0f, glm::vec3(1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 0.0f, 0.0f))->Use(lightBuffer.GetID());
 
 	window.OnUpdate().Register(std::bind_front(&Game::HandleUpdate, this));
 	window.OnKeyInput().Register(std::bind_front(&Game::HandleKeyInput, this));
