@@ -61,6 +61,7 @@ Game::Game() :
 	defaultShader->Set("material.ambient", 1.0f, 1.0f, 1.0f);
 	defaultShader->Set("material.diffuse", 1.0f, 1.0f, 1.0f);
 	defaultShader->Set("material.specular", 0.5f, 0.5f, 0.5f);
+	defaultShader->Set("material.shininess", 1.0f);
 
 	std::shared_ptr<Material> cubeMaterial = std::make_shared<Material>(defaultShader, std::make_shared<Texture>("resources/Ground_02.png"));
 
