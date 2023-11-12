@@ -1,4 +1,6 @@
 #version 330 core
+#define MAX_LIGHTS 4
+
 in VS_OUT
 {
     vec3 normal;
@@ -30,8 +32,7 @@ struct LightProperties
 
 layout (std140) uniform Light
 {
-    LightProperties directionalLight;
-    LightProperties pointLight;
+    LightProperties[MAX_LIGHTS] lights;
 };
 
 struct MaterialProperties
@@ -75,16 +76,18 @@ vec3 CalculateSpecular(in LightProperties light, in vec3 viewDir)
 
 void main()
 {
-    vec3 directional = CalculateDiffuse(directionalLight);
-    vec3 point = CalculateDiffuse(pointLight);
-
     vec3 viewDir = normalize(camera.position.xyz - fs_in.fragPos);
-    vec3 directionalSpecular = CalculateSpecular(directionalLight, viewDir);
-    vec3 pointSpecular = CalculateSpecular(pointLight, viewDir);
-
+    
     vec3 ambient = material.ambient * world.ambientLight.xyz;
-    vec3 diffuse = material.diffuse * directional + point;
-    vec3 specular = material.specular * directionalSpecular + pointSpecular;
+    vec3 diffuse = vec3(0.0f);
+    vec3 specular = vec3(0.0f);
+    for (int i = 0; i < MAX_LIGHTS; i++)
+    {
+        diffuse += CalculateDiffuse(lights[i]);
+        specular += CalculateSpecular(lights[i], viewDir);
+    }
+    diffuse *= material.diffuse;
+    specular *= material.specular;
 
     FragColor = vec4(ambient + diffuse + specular, 1.0f) * texture(material.texture, fs_in.texCoord);
 }
