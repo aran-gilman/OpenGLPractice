@@ -8,6 +8,12 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
+void Texture::Reset(unsigned int textureUnit)
+{
+	glActiveTexture(GL_TEXTURE0 + textureUnit);
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
 Texture::Texture(const std::string& path)
 {
 	glGenTextures(1, &id);
@@ -40,12 +46,8 @@ Texture::~Texture()
 	glDeleteTextures(1, &id);
 }
 
-void Texture::Use() const
+void Texture::Use(unsigned int textureUnit) const
 {
+	glActiveTexture(GL_TEXTURE0 + textureUnit);
 	glBindTexture(GL_TEXTURE_2D, id);
-}
-
-void Texture::Reset() const
-{
-	glBindTexture(GL_TEXTURE_2D, 0);
 }

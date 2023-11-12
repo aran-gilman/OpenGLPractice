@@ -6,11 +6,12 @@
 class Texture
 {
 public:
+	static void Reset(unsigned int textureUnit);
+
 	Texture(const std::string& path);
 	~Texture();
 
-	void Use() const;
-	void Reset() const;
+	void Use(unsigned int textureUnit) const;
 
 private:
 	unsigned int id;

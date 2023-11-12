@@ -63,7 +63,10 @@ Game::Game() :
 	defaultShader->Set("material.specular", 0.5f, 0.5f, 0.5f);
 	defaultShader->Set("material.shininess", 1.0f);
 
+	std::shared_ptr<Texture> whiteTexture = std::make_shared<Texture>("resources/white.png");
+
 	std::shared_ptr<Material> cubeMaterial = std::make_shared<Material>(defaultShader, std::make_shared<Texture>("resources/Ground_02.png"));
+	cubeMaterial->SetTexture(1, whiteTexture);
 
 	std::shared_ptr<Shader> texturelessShader = std::make_shared<Shader>(
 		ReadFile("resources/shaders/standardUnlit.vert"),
