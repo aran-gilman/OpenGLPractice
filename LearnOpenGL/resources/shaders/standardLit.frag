@@ -37,7 +37,7 @@ layout (std140) uniform Light
 
 struct MaterialProperties
 {
-    sampler2D texture;
+    sampler2D diffuseTexture;
 
     vec3 ambient;
     vec3 diffuse;
@@ -76,9 +76,8 @@ vec3 CalculateSpecular(in LightProperties light, in vec3 viewDir)
 
 void main()
 {
-    vec3 viewDir = normalize(camera.position.xyz - fs_in.fragPos);
-    
-    vec3 ambient = material.ambient * world.ambientLight.xyz;
+    // Calculate lighting independent of material
+    vec3 viewDir = normalize(camera.position.xyz - fs_in.fragPos);   
     vec3 diffuse = vec3(0.0f);
     vec3 specular = vec3(0.0f);
     for (int i = 0; i < MAX_LIGHTS; i++)
@@ -86,8 +85,15 @@ void main()
         diffuse += CalculateDiffuse(lights[i]);
         specular += CalculateSpecular(lights[i], viewDir);
     }
+
+    // Adjust colors based on material
+    vec3 ambient = material.ambient * world.ambientLight.xyz;
     diffuse *= material.diffuse;
     specular *= material.specular;
 
-    FragColor = vec4(ambient + diffuse + specular, 1.0f) * texture(material.texture, fs_in.texCoord);
+    vec4 diffuseTexture = texture(material.diffuseTexture, fs_in.texCoord);
+    vec3 result = (ambient + diffuse) * diffuseTexture.xyz;
+    result += specular;
+
+    FragColor = vec4(result, diffuseTexture.a);
 }
