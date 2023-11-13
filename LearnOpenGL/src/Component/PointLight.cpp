@@ -20,7 +20,7 @@ PointLight::PointLight(Object* owner, float strength, glm::vec3 color, float att
 
 void PointLight::Use(unsigned int bufferID)
 {
-	shaderData.position = glm::vec4(transform->GetPosition(), 0.0f);
+	shaderData.position = glm::vec4(transform->GetPosition(), 1.0f);
 
 	glBindBuffer(GL_UNIFORM_BUFFER, bufferID);
 	glBufferSubData(GL_UNIFORM_BUFFER, LightData::UniformBlockSize, LightData::UniformBlockSize, &shaderData);

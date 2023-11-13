@@ -9,12 +9,12 @@ struct LightData
 
 	static LightData CreateDirectional(glm::vec3 direction, glm::vec3 color, float intensity)
 	{
-		return LightData{ glm::vec4(direction, 1.0f), glm::vec4(color, intensity), glm::vec4(color, intensity / 2), 0.0f };
+		return LightData{ glm::vec4(direction, 0.0f), glm::vec4(color, intensity), glm::vec4(color, intensity / 2), 0.0f };
 	}
 
 	static LightData CreatePoint(glm::vec3 position, glm::vec3 color, float intensity, float attenuation)
 	{
-		return LightData{ glm::vec4(position, 0.0f), glm::vec4(color, intensity), glm::vec4(color, intensity / 2), attenuation };
+		return LightData{ glm::vec4(position, 1.0f), glm::vec4(color, intensity), glm::vec4(color, intensity / 2), attenuation };
 	}
 
 	glm::vec4 position;

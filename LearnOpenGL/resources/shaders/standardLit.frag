@@ -58,7 +58,7 @@ float CalculateAttenuation(in LightProperties light)
 
 vec3 CalculateDiffuse(in LightProperties light)
 {
-    vec3 direction = light.position.w > 0.0f ? -light.position.xyz : normalize(light.position.xyz - fs_in.fragPos);
+    vec3 direction = light.position.w > 0.0f ? normalize(light.position.xyz - fs_in.fragPos) : -light.position.xyz;
     float dot = max(dot(fs_in.normal, direction), 0.0f);
     vec3 color = dot * light.diffuse.w * light.diffuse.xyz;
     float attenuation = CalculateAttenuation(light);
@@ -67,7 +67,7 @@ vec3 CalculateDiffuse(in LightProperties light)
 
 vec3 CalculateSpecular(in LightProperties light, in vec3 viewDir)
 {
-    vec3 direction = light.position.w > 0.0f ? light.position.xyz : -normalize(light.position.xyz - fs_in.fragPos);
+    vec3 direction = light.position.w > 0.0f ? -normalize(light.position.xyz - fs_in.fragPos) : light.position.xyz;
     vec3 reflectDir = reflect(direction, fs_in.normal);
     float multiplier = pow(max(dot(viewDir, reflectDir), 0.0f), material.shininess);
     vec3 color = multiplier * light.specular.w * light.specular.xyz;
