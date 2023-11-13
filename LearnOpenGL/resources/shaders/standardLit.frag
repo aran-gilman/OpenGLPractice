@@ -38,6 +38,7 @@ layout (std140) uniform Light
 struct MaterialProperties
 {
     sampler2D diffuseTexture;
+    sampler2D specularTexture;
 
     vec3 ambient;
     vec3 diffuse;
@@ -93,7 +94,7 @@ void main()
 
     vec4 diffuseTexture = texture(material.diffuseTexture, fs_in.texCoord);
     vec3 result = (ambient + diffuse) * diffuseTexture.xyz;
-    result += specular;
+    result += specular * texture(material.specularTexture, fs_in.texCoord).xyz;
 
     FragColor = vec4(result, diffuseTexture.a);
 }

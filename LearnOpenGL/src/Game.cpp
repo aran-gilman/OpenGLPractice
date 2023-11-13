@@ -58,15 +58,16 @@ Game::Game() :
 		ReadFile("resources/shaders/standardUnlit.vert"),
 		ReadFile("resources/shaders/standardLit.frag"),
 		uniformBlocks);
+
+	defaultShader->Set("material.specularTexture", 1);
+
 	defaultShader->Set("material.ambient", 1.0f, 1.0f, 1.0f);
 	defaultShader->Set("material.diffuse", 1.0f, 1.0f, 1.0f);
-	defaultShader->Set("material.specular", 0.5f, 0.5f, 0.5f);
-	defaultShader->Set("material.shininess", 1.0f);
+	defaultShader->Set("material.specular", 2.0f, 2.0f, 2.0f);
+	defaultShader->Set("material.shininess", 32.0f);
 
-	std::shared_ptr<Texture> whiteTexture = std::make_shared<Texture>("resources/white.png");
-
-	std::shared_ptr<Material> cubeMaterial = std::make_shared<Material>(defaultShader, std::make_shared<Texture>("resources/Ground_02.png"));
-	cubeMaterial->SetTexture(1, whiteTexture);
+	std::shared_ptr<Material> cubeMaterial = std::make_shared<Material>(defaultShader, std::make_shared<Texture>("resources/container2.png"));
+	cubeMaterial->SetTexture(1, std::make_shared<Texture>("resources/container2_specular.png"));
 
 	std::shared_ptr<Shader> texturelessShader = std::make_shared<Shader>(
 		ReadFile("resources/shaders/standardUnlit.vert"),
